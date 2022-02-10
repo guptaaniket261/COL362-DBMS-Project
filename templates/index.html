@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <title>Driver information</title>
+  <head>
+
+  </head>
+  <body>
+    <div id="content" style="max-width: 500px; padding:10px;">
+      <h1>Driver information</h1>
+      {% for driver in drivers %}
+        <div class = 'drivers'>
+          {{ driver[0] }} ------- {{ driver[1] }} ----- {{ driver[3] }}
+        </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>
