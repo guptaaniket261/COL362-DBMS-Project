@@ -21,11 +21,16 @@ def get_db_connection():
 
 @app.route('/')
 def index():
+  # return render_template('loginPage.html')
   conn = get_db_connection()
   cur = conn.cursor()
   cur.execute("SELECT * FROM drivers limit 10")
   drivers = cur.fetchall()
   return render_template('index.html', drivers=drivers)
+
+@app.route('/login')
+def login():
+  return render_template('loginPage.html')
 
 
 if __name__ == '__main__':
