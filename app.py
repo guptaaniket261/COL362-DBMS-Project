@@ -55,6 +55,13 @@ def companyProfilePage(companyName):
   print(jobsRecord)
   companyRecord.append(jobsRecord)
   return render_template('company-profile-page.html', companyRecord=companyRecord)
+@app.route('/profile')
+def get():
+  # conn = get_db_connection()
+  # cur = conn.cursor()
+  # cur.execute("SELECT * FROM drivers limit 10")
+  # drivers = cur.fetchall()
+  return render_template('user_profile.html')
 @app.route('/login')
 def login():
   return render_template('loginPage.html')
