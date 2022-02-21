@@ -30,6 +30,7 @@ def index():
 
 @app.route('/applications/<jobid>')
 def applications(jobid):
+  # return render_template('loginPage.html')
   conn = get_db_connection()
   cur = conn.cursor()
   cur.execute("SELECT * FROM job_details WHERE job_id = %(j_id)s", {"j_id": jobid })
@@ -54,6 +55,12 @@ def companyProfilePage(companyName):
   print(jobsRecord)
   companyRecord.append(jobsRecord)
   return render_template('company-profile-page.html', companyRecord=companyRecord)
+@app.route('/login')
+def login():
+  return render_template('loginPage.html')
 
+@app.route('/user')
+def userpage():
+  return render_template('userPage.html')
 if __name__ == '__main__':
   app.run(debug=True)
