@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>corepage</title>
+    <title>UserPage</title>
     <meta charset="utf-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1">  
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
@@ -15,17 +15,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css" integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
+
+
 <body style="margin-left: 30mm; margin-right: 30mm; margin-bottom: 30mm;">
     <section id = "nav-bar">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Grabajob</a>
+            
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a class="navbar-brand" href="#">Grabajob</a>
+                </li>
                 <li class="nav-item active">
-                  <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                  <a class="nav-link" href="/user/0">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">User Profile</a>
+                  <a class="nav-link" href="/user_profile">User Profile</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="#">About US</a>
@@ -40,9 +45,11 @@
             </div>
           </nav>
     </section>
-    <h3 style="margin-left:130mm;">Jobs</h3>
     
-    <div class="container" style="margin-left: 130mm;">
+    
+    
+    <div class="container" style="float: right; width:60%; margin-left: 3%; margin-right: 4%;">
+      <h3 style="margin-left:130mm;">Jobs</h3>
     {% for job in jobs %}
       <div class="card mb-3" style="max-width: 1000px;">
         <div class="row g-0">
@@ -51,74 +58,99 @@
           </div>
           <div class="col-md-8">
             <div class="card-body">
-              <h5 class="card-title">{{ job[2] }}</h5>
+              <h5 class="card-title">{{ job[3] }}</h5>
               <p class="card-text">{{ job[1] }}</p>
-              <p class="card-text"><small class="text-muted">{{ job[4] }}</small></p>
-              <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[1] }}</small></p>
-              <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[5] }}</small></p>
-              <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[7] }}</small></p>
-              <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[8] }}</small></p>
+              <p class="card-text"><small class="text-muted">{{ job[5] }}</small></p>
+              <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[2] }}</small></p>
+              <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[6] }}</small></p>
+              <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[8] }}</small></p>
+              <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[10] }}</small></p>
+              <br>
+              <a href="#" class="btn btn-primary" style="margin-right:3%;">See Details</a>
               <a href="#" class="btn btn-primary">Apply</a>
             </div>
           </div>
         </div>
       </div>
     {% endfor %}
+    
+    {% if curr_pg > -1 %}
 
     <div class="d-flex justify-content-center">
       <nav aria-label="Page navigation example">
         <ul class="pagination">
-          <li class="page-item"><a class="page-link" href="">Previous</a></li>
-          <li class="page-item active"><a class="page-link" href="/user/{{pgs[0]}}">{{ pgs[0] }}</a></li>
-          <li class="page-item"><a class="page-link" href="/user/{{pgs[1]}}">{{ pgs[1]}}</a></li>
-          <li class="page-item"><a class="page-link" href="/user/{{pgs[2]}}">{{ pgs[2]}}</a></li>
-          <li class="page-item"><a class="page-link" href="/user/{{pgs[3]}}">{{ pgs[3]}}</a></li>
+          <li class="page-item"><a class="page-link" href="/user/0">First</a></li>
+          {% if curr_pg > 2 %}
+            <li class="page-item"><a class="page-link" href="/user/{{pgs[0]}}">Previous</a></li>
+          {% endif %}
+          
+          {% for pg in pgs[1:] %}
+            {% if pg == curr_pg %}
+              <li class="page-item active"><a class="page-link" href="/user/{{pg}}">{{pg}}</a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="/user/{{pg}}">{{pg}}</a></li>
+            {% endif %}
+          {% endfor %}
+          
           <li class="page-item"><a class="page-link" href="/user/{{pgs[4]}}">Next</a></li>
         </ul>
       </nav>
     </div>
+
+    {% endif %}
     </div>
     
     
-    <div class = "custom-form" style="width: 100mm;">
+    <div class = "custom-form" style="float:left; width: 30%;">
       <form class="customform" method="post" action="">
         <h1 class="formtitle">Filters</h1>
         
         <div class="form-group" style="margin-top: 2.5mm;">
-          <label for="exampleFormControlSelect1">Job Type</label>
-          <select class="form-control" id="exampleFormControlSelect1">
-            <option>Full Time</option>
-            <option>Part Time</option>
-            <option>Internship</option>
-            <option>Freelance</option>
+          <label for="job-type">Job Type</label>
+          <select class="form-control" id="job-type" name="job-type">
+            <option value="--">--</option>
+            <option value="full-time">Full Time</option>
+            <option value="part-time">Part Time</option>
+            <option value="internship">Internship</option>
+            <option value="contract">Contract</option>
+            <option value="work-from-home">Work From Home</option>
           </select>
-        </div>
-        <div class="form-group" style="margin-top: 2.5mm;">
-          <label for="exampleFormControlSelect2">Job Location</label>
-          <select class="form-control" id="exampleFormControlSelect2">
-            <option>Bangalore</option>
-            <option>Chennai</option>
-            <option>Delhi</option>
-            <option>Mumbai</option>
-          </select>
-        </div>
-        
-        <div class="form-group" style="margin-top: 2.5mm;">
-          <label for="customRange3" class="form-label">Salary</label>
-          <input type="range" class="form-range" min="0" max="5" step="0.5" id="customRange3">
         </div>
 
+
         <div class="form-group" style="margin-top: 2.5mm;">
-          <label for="exampleFormControlSelect3">Top Companies</label>
-          <select class="form-control" id="exampleFormControlSelect3">
-            <option>Google</option>
-            <option>Microsoft</option>
-            <option>Amazon</option>
-            <option>Facebook</option>
+          <label for="job-location">Job Location</label>
+          <select class="form-control" id="job-location" name="job-location">
+            <option value="--">--</option>
+            {% for location in locations %}
+              <option value="{{ location[0] }}">{{ location[0] }}</option>
+            {% endfor %}
           </select>
         </div>
         
-        
+        <!-- <div class="form-group" style="margin-top: 2.5mm;">
+          <label for="customRange3" class="form-label">Salary</label>
+          <input type="range" class="form-range" min="0" max="5" step="0.5" id="customRange3">
+        </div> -->
+
+        <div class="form-group" style="margin-top: 2.5mm;">
+          <label for="job-category">Job Category</label>
+          <select class="form-control" id="job-category" name="job-category">
+            <option value="--">--</option>
+            {% for category in categories %}
+              <option value="{{ category[0] }}">{{ category[0] }}</option>
+            {% endfor %}
+          </select>
+
+        <div class="form-group" style="margin-top: 2.5mm;">
+          <label for="company">Top Companies</label>
+          <select class="form-control" id="company" name="company">
+            <option value="--">--</option>
+            {% for company in companies %}
+              <option value="{{ company[0] }}">{{ company[0] }}</option>
+            {% endfor %}
+          </select>
+        </div>
         <button type="submit" class="btn btn-default" style="background-color: gray; margin-top: 4mm;">Filter</button> 
       </form>
       
