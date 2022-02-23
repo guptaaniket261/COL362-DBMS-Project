@@ -55,13 +55,17 @@ def companyProfilePage(companyName):
   print(jobsRecord)
   companyRecord.append(jobsRecord)
   return render_template('company-profile-page.html', companyRecord=companyRecord)
-@app.route('/profile')
+@app.route('/user_profile')
 def get():
   # conn = get_db_connection()
   # cur = conn.cursor()
   # cur.execute("SELECT * FROM drivers limit 10")
   # drivers = cur.fetchall()
   return render_template('user_profile.html')
+
+@app.route('/company_profile')
+def getcompany_profile():
+  return render_template('company_profile.html')
 @app.route('/login')
 def login():
   return render_template('loginPage.html')
@@ -69,5 +73,14 @@ def login():
 @app.route('/user')
 def userpage():
   return render_template('userPage.html')
+
+@app.route('/company')
+def companypage():
+  return render_template('companyPage.html')
+
+@app.route('/postjob')
+def createjob():
+  return render_template('postJob.html')
+
 if __name__ == '__main__':
   app.run(debug=True)
