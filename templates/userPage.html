@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css" integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body style="margin-left: 30mm; margin-right: 30mm;">
+<body style="margin-left: 30mm; margin-right: 30mm; margin-bottom: 30mm;">
     <section id = "nav-bar">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">Grabajob</a>
@@ -32,62 +32,98 @@
                 </li>
               </ul>
               
-              <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+
+              <form class="d-flex" method="POST">
+                <input class="form-control me-2" placeholder="Search" aria-label="Search" name="tag" >
                 <button class="btn btn-outline-success" type="submit">Search</button>
               </form>
             </div>
           </nav>
     </section>
     <h3 style="margin-left:130mm;">Jobs</h3>
-    <!-- {% for job in jobs}
-    <div class = 'jobs'>
-        <div class = 'job-title'>
-            {{ job[0] }}
-        </div>
-        <div class = 'job-description'>
-            {{ job[1] }}
-        </div>
-        <div class = 'job-location'>
-            {{ job[2] }}
-        </div>
-        <div class = 'job-salary'>
-            {{ job[3] }}
-        </div>
-        <div class = 'job-date'>
-            {{ job[4] }}
-        </div>
-        <div class = 'job-company'>
-            {{ job[5] }}
-        </div>
-        <div class = 'job-contact'>
-            {{ job[6] }}
-        </div> -->
-
-
-        <div class="card mb-3" style="max-width: 1000px; margin-left: 130mm;">
-          <div class="row g-0">
-            <div class="col-md-4">
-              <img src="..." class="img-fluid rounded-start" alt="...">
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title">Job Title</h5>
-                <p class="card-text">Company Name</p>
-                <p class="card-text"><small class="text-muted">Job Type</small></p>
-                <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">Job Location</small></p>
-                <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">Skills</small></p>
-                <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">Job Salary</small></p>
-                <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">Experience</small></p>
-                <a href="#" class="btn btn-primary">Apply</a>
-              </div>
+    
+    <div class="container" style="margin-left: 130mm;">
+    {% for job in jobs %}
+      <div class="card mb-3" style="max-width: 1000px;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="..." class="img-fluid rounded-start" alt="...">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{ job[2] }}</h5>
+              <p class="card-text">{{ job[1] }}</p>
+              <p class="card-text"><small class="text-muted">{{ job[4] }}</small></p>
+              <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[1] }}</small></p>
+              <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[5] }}</small></p>
+              <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[7] }}</small></p>
+              <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[8] }}</small></p>
+              <a href="#" class="btn btn-primary">Apply</a>
             </div>
           </div>
         </div>
+      </div>
+    {% endfor %}
+
+    <div class="d-flex justify-content-center">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item"><a class="page-link" href="">Previous</a></li>
+          <li class="page-item active"><a class="page-link" href="/user/{{pgs[0]}}">{{ pgs[0] }}</a></li>
+          <li class="page-item"><a class="page-link" href="/user/{{pgs[1]}}">{{ pgs[1]}}</a></li>
+          <li class="page-item"><a class="page-link" href="/user/{{pgs[2]}}">{{ pgs[2]}}</a></li>
+          <li class="page-item"><a class="page-link" href="/user/{{pgs[3]}}">{{ pgs[3]}}</a></li>
+          <li class="page-item"><a class="page-link" href="/user/{{pgs[4]}}">Next</a></li>
+        </ul>
+      </nav>
+    </div>
+    </div>
+    
+    
+    <div class = "custom-form" style="width: 100mm;">
+      <form class="customform" method="post" action="">
+        <h1 class="formtitle">Filters</h1>
+        
+        <div class="form-group" style="margin-top: 2.5mm;">
+          <label for="exampleFormControlSelect1">Job Type</label>
+          <select class="form-control" id="exampleFormControlSelect1">
+            <option>Full Time</option>
+            <option>Part Time</option>
+            <option>Internship</option>
+            <option>Freelance</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-top: 2.5mm;">
+          <label for="exampleFormControlSelect2">Job Location</label>
+          <select class="form-control" id="exampleFormControlSelect2">
+            <option>Bangalore</option>
+            <option>Chennai</option>
+            <option>Delhi</option>
+            <option>Mumbai</option>
+          </select>
+        </div>
+        
+        <div class="form-group" style="margin-top: 2.5mm;">
+          <label for="customRange3" class="form-label">Salary</label>
+          <input type="range" class="form-range" min="0" max="5" step="0.5" id="customRange3">
+        </div>
+
+        <div class="form-group" style="margin-top: 2.5mm;">
+          <label for="exampleFormControlSelect3">Top Companies</label>
+          <select class="form-control" id="exampleFormControlSelect3">
+            <option>Google</option>
+            <option>Microsoft</option>
+            <option>Amazon</option>
+            <option>Facebook</option>
+          </select>
+        </div>
+        
+        
+        <button type="submit" class="btn btn-default" style="background-color: gray; margin-top: 4mm;">Filter</button> 
+      </form>
+      
+    </div>
+
 
 </body>
-
-
-
-
 </html>
