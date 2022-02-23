@@ -1,6 +1,6 @@
 import os
 import psycopg2
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 from config import credentials
 
 
@@ -66,13 +66,11 @@ def get():
 @app.route('/company_profile')
 def getcompany_profile():
   return render_template('company_profile.html')
-@app.route('/login')
-def login():
-  return render_template('loginPage.html')
 
-@app.route('/user')
-def userpage():
-  return render_template('userPage.html')
+@app.route('/login', methods=["GET", "POST"])
+def login():
+  print(request.form)
+  return render_template('loginPage.html')
 
 @app.route('/company')
 def companypage():
@@ -81,6 +79,38 @@ def companypage():
 @app.route('/postjob')
 def createjob():
   return render_template('postJob.html')
+
+def user():
+  return redirect('/user/0')
+
+@app.route('/user/<offset>', methods=["GET", "POST"])
+def userpage(offset):
+  print(request.form)
+  if request.method == "GET":
+    conn = get_db_connection()
+    cur = conn.cursor()
+    if offset.isnumeric():
+      pg = int(float(offset))
+      start = int(float(offset))*10
+    else:
+      start = 0
+      pg = 0
+    cur.execute("SELECT * FROM job_details limit 10 offset %(o)s", {"o": start})
+    jobs = cur.fetchall()
+    cur.execute("Select company_id, company_name, location from company_details")
+    companies = cur.fetchall()
+    return render_template('userPage.html', jobs = jobs, pgs = [pg, pg+1, pg+2, pg+3], companies = companies)
+  
+  if request.method == "POST":
+    print("==========================")
+    print("Handling POST request")
+    print("==========================")
+    # conn = get_db_connection()
+    # cur = conn.cursor()
+    # cur.execute("INSERT INTO applications (user_id, job_id) VALUES (%(u_id)s, %(j_id)s)", {"u_id": request.form['user_id'], "j_id": request.form['job_id']})
+    # conn.commit()
+    return redirect('/user/0')
+
 
 if __name__ == '__main__':
   app.run(debug=True)
