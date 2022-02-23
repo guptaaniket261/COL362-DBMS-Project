@@ -35,9 +35,14 @@ def get():
   # cur.execute("SELECT * FROM drivers limit 10")
   # drivers = cur.fetchall()
   return render_template('user_profile.html')
+
 @app.route('/login')
 def login():
   return render_template('loginPage.html')
+
+@app.route('/user')
+def gett():
+  return render_template('userPage.html')
 
 
 if __name__ == '__main__':
