@@ -14,7 +14,7 @@ def gen_contact():
     contact = "".join(ph_no)
     return contact  
 
-data = pd.read_csv('user.csv')
+data = pd.read_csv('/kaggle/input/userss/user.csv')
 df = pd.DataFrame(data) 
 first_names = df.iloc[:]['fname']
 last_names = df.iloc[:]['lname']
@@ -23,10 +23,17 @@ eths = df.iloc[:]['eth']
 emails = list(map(lambda x: x+"@gmail.com" ,first_names))
 ages = list(np.random.randint(low = 20, high = 75, size = 2000))
 
-data2 = pd.read_csv('addresses.csv')
+data2 = pd.read_csv('/kaggle/input/userss/addresses.csv')
 df2 = pd.DataFrame(data2) 
 addresses = df2.iloc[:]['Address']
-fields = ["userId","firstname","lastname","age","gender","ethnicity","address","pastExperience","email","contact"]
+states = df2.iloc[:]['State']
+
+data3 = pd.read_csv('/kaggle/input/hr-analytics-job-change-of-data-scientists/aug_train.csv') 
+df3 = pd.DataFrame(data3)
+level = df3.iloc[:]['education_level']
+sub = df3.iloc[:]['major_discipline']
+
+fields = ["userId","firstname","lastname","age","gender","ethnicity","address","state","pastExperience","email","contact","Education"]
 rows = []
 for i in range(2000):
     row = []
@@ -37,12 +44,15 @@ for i in range(2000):
     row.append(genders[i])
     row.append(eths[i])
     row.append(addresses[i%len(addresses)])
+    row.append(states[i%len(addresses)])
     exp = []
     exp.append(r.randint(1,2000))
     exp.append(r.randint(1,2000))
     row.append(exp)
     row.append(emails[i])
     row.append(gen_contact())
+    edu = str(level[i])+ " in " +str(sub[i]) 
+    row.append(edu)
     rows.append(row)
     print(row)
 
@@ -58,3 +68,5 @@ with open('userDetails', 'w') as f:
 
 
  
+
+
