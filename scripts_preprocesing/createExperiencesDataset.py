@@ -53,15 +53,15 @@ for role in titles:
 # print(len(companies))
 # print(len(exps))
 # print(titles)
-fields = ['exp_id','company','year1','year2','role']
+fields = ['exp_id','company','start_year','years','role']
 rows = []
 for i in range(2000):
     row = []
     row.append(i+1)
     row.append(companies[i])
     duration = str(exps[i]).split()
-    row.append(int(duration[0]))
-    row.append(int(duration[2]))
+    row.append(2000+int(duration[0]))
+    row.append(2000+int(duration[2]))
     row.append(roles[i])
     rows.append(row)
     print(row)
