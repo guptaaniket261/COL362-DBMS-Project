@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css" integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body style="margin-left: 30mm; margin-right: 30mm;">
+<body style="margin-left: 30mm; margin-right: 30mm; margin-bottom: 30mm;">
     <section id = "nav-bar">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">Grabajob</a>
@@ -35,50 +35,40 @@
                 </li>
               </ul>
               
-              <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+
+              <form class="d-flex" method="POST">
+                <input class="form-control me-2" placeholder="Search" aria-label="Search" name="tag" >
                 <button class="btn btn-outline-success" type="submit">Search</button>
               </form>
             </div>
           </nav>
     </section>
-    <h3 style="margin-left:130mm;">Jobs you posted</h3>
- 
+    <h3 style="margin-left:130mm;">Applicants for this job</h3>
+    
     <div class="container" style="margin-left: 130mm;">
-      {% for job in jobs %}
-        <div class="card mb-3" style="max-width: 1000px;">
-          <div class="row g-0">
-            <div class="col-md-4">
-              <img src="https://cdn.pixabay.com/photo/2016/04/10/21/53/distorted-1320866_960_720.png" class="img-fluid rounded-start" alt="...">
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title">{{ job[2] }}</h5>
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-secondary active">
-                      <input type="radio" name="options" id="option1" autocomplete="off" checked> Open
-                    </label>
-                    <label class="btn btn-secondary">
-                      <input type="radio" name="options" id="option2" autocomplete="off"> Closed
-                    </label>
-                  </div>
-                
-                <p class="card-text"><small class="text-muted">{{ job[4] }}</small></p>
-                <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[1] }}</small></p>
-                <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[5] }}</small></p>
-                <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[7] }}</small></p>
-                <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[8] }}</small></p>
-                <a href="/applications/{{ job[0] }}" class="btn btn-primary">See applicants</a>
-                <a href="#" class="btn btn-primary">Delete job listing</a>
-              </div>
+    {% for applicant in applications %}
+      <div class="card mb-3" style="max-width: 1000px;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="https://cdn.pixabay.com/photo/2016/04/10/21/53/distorted-1320866_960_720.png" class="img-fluid rounded-start" alt="...">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{ applicant[1] }} {{ applicant[2] }}</h5>
+              <p class="card-text">{{ applicant[7] }}</p>
+              <p class="card-text"><small class="text-muted">{{ applicant[4] }}</small></p>
+              <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ applicant[1] }}</small></p>
+              <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ applicant[5] }}</small></p>
+              <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ applicant[7] }}</small></p>
+              <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ applicant[8] }}</small></p>
+              <a href="#" class="btn btn-primary">Accept</a>
+              <a href="#" class="btn btn-primary">Reject</a>
             </div>
           </div>
         </div>
-      {% endfor %}
+      </div>
+    {% endfor %}
+
 
 </body>
-
-
-
-
 </html>

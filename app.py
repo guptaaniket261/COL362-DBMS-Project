@@ -33,28 +33,12 @@ def applications(jobid):
   # return render_template('loginPage.html')
   conn = get_db_connection()
   cur = conn.cursor()
-  cur.execute("SELECT * FROM job_details WHERE job_id = %(j_id)s", {"j_id": jobid })
-  jobRecord = cur.fetchall()
+  # TODO Query to be changed
+  cur.execute("SELECT * FROM applications WHERE job_id = %(j_id)s", {"j_id": jobid })
+  applications = cur.fetchall()
 
-  cur.execute("SELECT * FROM user_details WHERE user_id IN (SELECT user_id FROM applications WHERE job_id = %(j_id)s)", {"j_id": jobid })
-  appRecords = cur.fetchall()
-  jobRecord.append(appRecords)
-  print(jobRecord)
-  return render_template('job-applications.html', jobAppRecord=jobRecord)
+  return render_template('applications.html', applications=applications)
 
-@app.route('/company-profile/<companyName>')
-def companyProfilePage(companyName):
-  print(companyName)
-  conn = get_db_connection()
-  cur = conn.cursor()
-  cur.execute("SELECT * FROM company_details WHERE company_name = %(c_name)s", {"c_name": companyName })
-  companyRecord = cur.fetchall()
-  print(companyRecord)
-  cur.execute("SELECT * FROM job_details WHERE company_id = %(c_id)s", {"c_id": companyRecord[0][0] })
-  jobsRecord = cur.fetchall()
-  print(jobsRecord)
-  companyRecord.append(jobsRecord)
-  return render_template('company-profile-page.html', companyRecord=companyRecord)
 @app.route('/user_profile')
 def get():
   # conn = get_db_connection()
@@ -71,10 +55,6 @@ def getcompany_profile():
 def login():
   print(request.form)
   return render_template('loginPage.html')
-
-@app.route('/company')
-def companypage():
-  return render_template('companyPage.html')
 
 @app.route('/postjob')
 def createjob():
@@ -111,6 +91,28 @@ def userpage(offset):
     # conn.commit()
     return redirect('/user/0')
 
+@app.route('/company/<cmpid>', methods=["GET", "POST"])
+def cmppage(cmpid):
+  print(request.form)
+  if request.method == "GET":
+    conn = get_db_connection()
+    cur = conn.cursor()
+    if cmpid.isnumeric():
+      cmpid = int(cmpid)
+    else:
+      print("Invalid companyid")
+    cur.execute("SELECT * FROM job_details WHERE company_id = %(c)s", {"c": cmpid})
+    jobs = cur.fetchall()
+    print(jobs)
+
+    return render_template('companyPage.html', jobs = jobs)
+  
+  if request.method == "POST":
+    print("==========================")
+    print("Handling POST request")
+    print("==========================")
+    # TODO Needs to be changed
+    return redirect('/user/0')
 
 if __name__ == '__main__':
   app.run(debug=True)
