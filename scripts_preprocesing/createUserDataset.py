@@ -43,7 +43,7 @@ for i in range(2000):
     row.append(ages[i])
     row.append(genders[i])
     row.append(eths[i])
-    row.append(addresses[i%len(addresses)])
+    row.append(addresses[i%len(addresses)].strip())
     row.append(states[i%len(addresses)])
     exp = []
     exp.append(r.randint(1,2000))
