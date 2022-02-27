@@ -7,7 +7,6 @@ from config import credentials
 app = Flask(__name__)
 
 
-
 def get_db_connection():
     """
     Returns a connection to the database
@@ -18,8 +17,9 @@ def get_db_connection():
       user = credentials['user'],
       password = credentials['password']
     )
-
     return conn
+
+
 
 @app.route('/')
 def index():
@@ -31,9 +31,19 @@ def index():
   return "Hello world"
 
 
+@app.route('/login', methods=["GET", "POST"])
+def login():
+  print(request.form)
+  return render_template('loginPage.html')
+
+
+
 @app.route('/user_register', methods=['POST', 'GET'])
 def user_register():
+  print(request.form)
   return render_template('user_register.html')
+
+
 
 @app.route('/applications/<jobid>')
 def applications(jobid):
@@ -45,6 +55,8 @@ def applications(jobid):
   applications = cur.fetchall()
 
   return render_template('applications.html', applications=applications)
+
+
 
 @app.route('/user_profile')
 def get():
@@ -58,10 +70,6 @@ def get():
 def getcompany_profile():
   return render_template('company_profile.html')
 
-@app.route('/login', methods=["GET", "POST"])
-def login():
-  print(request.form)
-  return render_template('loginPage.html')
 
 @app.route('/postjob')
 def createjob():
@@ -72,7 +80,7 @@ def createjob():
 def user():
   return redirect('/user/0')
 
-  
+
 
 @app.route('/user/<offset>', methods=["GET", "POST"])
 def userpage(offset):
