@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import os
 import psycopg2
 from flask import Blueprint, Flask, render_template, redirect, request, flash
@@ -33,12 +34,17 @@ def login():
     cur = conn.cursor()
     cur.execute("SELECT * FROM login_details WHERE login_id = %s AND password = %s", (email, password))
     user = cur.fetchone()
-    cur.execute("select user_id from user_details where email = %(o)s", {'o': email})
-    user_id = cur.fetchone()
-    if user:
-      return redirect('/user_{0}'.format(user_id[0]))
+    print("==============================")
+    print(user[4], type)
+    print("==============================")
+    if user[4] != None:
+      # cur.execute("select user_id from user_details where user_id = %(o)s", {'o': user[4]})
+      # user_id = cur.fetchone()
+      return redirect('/user_{0}'.format(user[4]))
     else:
-      return render_template('loginPage.html')
+      # cur.execute("select company_id from company_details where email = %(o)s", {'o': email})
+      return redirect('/company_{0}'.format(user[5]))
+
   return render_template('loginPage.html')
 
 
@@ -235,7 +241,7 @@ def jobDetails(jobid, userid):
 def jobs_applied(userid):
   conn = get_db_connection()
   cur = conn.cursor()
-  cur.execute('''SELECT job_id, company_details.company_name,  
+  cur.execute('''SELECT jobs.job_id, company_details.company_name,  
                     title, description, job_type, prerequisites, skills, 
                     pay_rate, no_positions, experience_required , location, 
                     contact, email, applications.status
@@ -249,7 +255,7 @@ def jobs_applied(userid):
   jobs_applied = []
   status_map = {0: "APPLICATION IN PROCESS", 1: "APPLICATION ACCEPTED", 2: "APPLICATION REJECTED"}
   for job in jobs:
-    job_detail = JobDetail(job[0], job[1], job[2], job[3], job[4], job[5], job[6], job[7], job[8], job[9], job[10], job[11], job[12], job[13])
+    job_detail = JobDetail(job[0], job[1], job[2], job[3], job[4], job[5], job[6], job[7], job[8], job[9], job[10], job[11], job[12], status_map[job[13]])
     jobs_applied.append(job_detail)
 
   return render_template('jobsApplied.html', jobs_applied=jobs_applied, user_id=userid)
@@ -258,6 +264,10 @@ def jobs_applied(userid):
 @app.route('/user_profile')
 def get():
   return render_template('user_profile.html')
+
+
+
+
 
 @app.route('/company_profile')
 def getcompany_profile():
@@ -269,7 +279,7 @@ def createjob():
   return render_template('postJob.html')
 
 
-@app.route('/company/<cmpid>', methods=["GET", "POST"])
+@app.route('/company_<cmpid>', methods=["GET", "POST"])
 def cmppage(cmpid):
   print(request.form)
   if request.method == "GET":

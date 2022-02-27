@@ -30,7 +30,7 @@
                   <a class="nav-link" href="/user_{{ user_id }}/0">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Jobs Applied</a>
+                  <a class="nav-link" href="/jobsApplied_{{user_id}}">Jobs Applied</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="/user_profile">User Profile</a>
@@ -50,8 +50,8 @@
     </section>
     
 
-    <div class="container" style="float: right; width:60%; margin-left: 3%; margin-right: 4%;">
-      <h3 style="margin-left:130mm;">Jobs Applied</h3>
+    <div class="container" style=" width:70%; margin-left: 3%; margin-right: 4%;">
+      <h3 style="margin-left:70mm;">Jobs Applied</h3>
     
 
     {% for job_detail in jobs_applied %}
@@ -73,7 +73,8 @@
               <p class="fa fa-phone-square" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{job_detail.contact}}</small></p>
               <p class="card-text">Positions Available: {{job_detail.no_positions}}</p>
               <br>
-              <a href="/job_apply_{{userid}}/{{job_detail.job_id}}" class="btn btn-primary">Apply</a>
+              <h4>Application Status</h4>
+              <a href="#" class="btn btn-primary">{{job_detail.status}}</a>
             </div>
           </div>
         </div>
