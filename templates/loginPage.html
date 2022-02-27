@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">  
+{% extends "base.html" %} {% block title %}Search{% endblock %} {% block
+    content %}
   
-<head>  
-    <title>Login</title>  
-    <meta charset="utf-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1">  
-    <link rel="stylesheet" href="https//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
-    <script src="https//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>  
-    <script src="https//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>  
-</head>  
-  
-<body>  
   <style>
     .custom-form{
         border-radius: 10px;
@@ -62,9 +52,7 @@
           <input type="password" class="form-control" name="password" id="password" placeholder="Password">
       </div>
       <button type="submit" class="btn btn-default">Login</button>
-      <a class="btn btn-default" href="/user_register" style="align:center">First time? Sign Up..</a>
+      <a class="btn btn-default" href="/user_register" style="align: center;">First time? Sign Up..</a>
   </form>
   </div>
-</body>  
-  
-</html> 
+  {% endblock %}

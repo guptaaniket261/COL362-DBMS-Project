@@ -1,6 +1,6 @@
 import os
 import psycopg2
-from flask import Blueprint, Flask, render_template, redirect, request
+from flask import Blueprint, Flask, render_template, redirect, request, flash
 from config import credentials
 
 
@@ -19,75 +19,79 @@ def get_db_connection():
     )
     return conn
 
-
-
 @app.route('/')
 def index():
-  #conn = get_db_connection()
-  #cur = conn.cursor()
-  #cur.execute("SELECT * FROM drivers limit 10")
-  #drivers = cur.fetchall()
-  #return render_template('index.html', drivers=drivers)  WHERE company_name = '{companyName}'
-  return "Hello world"
+  return redirect('/login')
 
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-  print(request.form)
+  if request.method == "POST":
+    email = request.form['email']
+    password = request.form['password']
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM login_details WHERE login_id = %s AND password = %s", (email, password))
+    user = cur.fetchone()
+    if user:
+      return redirect('/user')
+    else:
+      return render_template('loginPage.html')
+  
   return render_template('loginPage.html')
-
 
 
 @app.route('/user_register', methods=['POST', 'GET'])
 def user_register():
-  print(request.form)
+  # print(request.form)
+  if request.method == "POST":
+    email = request.form['email']
+    password = request.form['password']
+    user_type = request.form['user_type']
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    print(email)
+    cur.execute("SELECT * FROM login_details WHERE login_id = '{0}'".format(email))
+    user = cur.fetchone()
+    if user:
+      print("User already exists")
+      flash('User already exists',category='error')
+      return redirect('/user_register')
+    else:
+      if user_type == "applicant":
+        cur.execute("INSERT INTO user_details VALUES (DEFAULT, NULL, NULL,NULL,NULL,NULL,NULL,NULL,%(o)s, NULL, NULL)", {'o': str(email)})
+        conn.commit()
+        cur.execute("select user_id from user_details where email = %s", (email))
+        user_id = cur.fetchone()
+        print("=====================")
+        print(user_id)
+        print("=====================")
+        
+        cur.execute("INSERT INTO login_details VALUES (DEFAULT, %(email)s, %(password)s, 'applicant', %(userid)s, NULL)", {'email': str(email), 'password': str(password), 'userid': str(user_id[0])})
+        conn.commit()
+        # cur.execute("INSERT INTO login_details VALUES (DEFAULT, %s, %s, %s, %s, NULL)", (email, password, "user", user[]))
+        # conn.commit()
+        # flash('User registered successfully',category='success')
+    return redirect('/login')
   return render_template('user_register.html')
-
-
-
-@app.route('/applications/<jobid>')
-def applications(jobid):
-  # return render_template('loginPage.html')
-  conn = get_db_connection()
-  cur = conn.cursor()
-  # TODO Query to be changed
-  cur.execute("SELECT * FROM applications WHERE job_id = %(j_id)s", {"j_id": jobid })
-  applications = cur.fetchall()
-
-  return render_template('applications.html', applications=applications)
-
-
-
-@app.route('/user_profile')
-def get():
-  # conn = get_db_connection()
-  # cur = conn.cursor()
-  # cur.execute("SELECT * FROM drivers limit 10")
-  # drivers = cur.fetchall()
-  return render_template('user_profile.html')
-
-@app.route('/company_profile')
-def getcompany_profile():
-  return render_template('company_profile.html')
-
-
-@app.route('/postjob')
-def createjob():
-  return render_template('postJob.html')
 
 
 @app.route('/user')
 def user():
+  # if(userDetails.user_id == -1):
+  #   return redirect('/login')
   return redirect('/user/0')
-
-
 
 @app.route('/user/<offset>', methods=["GET", "POST"])
 def userpage(offset):
+  # print("==========================")
+  # print(USER_DETAILS.firstname)
+  # print("==========================")
   print(request.form)
   if offset.isnumeric():
-      pg = int(float(offset))
-      start = int(float(offset))*10
+    pg = int(float(offset))
+    start = int(float(offset))*10
   else:
     start = 0
     pg = 0
@@ -178,6 +182,32 @@ def userpage(offset):
 
   return redirect('/user/0')
 
+
+
+@app.route('/applications/<jobid>')
+def applications(jobid):
+  # return render_template('loginPage.html')
+  conn = get_db_connection()
+  cur = conn.cursor()
+  # TODO Query to be changed
+  cur.execute("SELECT application_id, firstname, lastname, age, gender, education, email, contact, status FROM user_details NATURAL JOIN (SELECT * FROM applications WHERE  job_id = %(j_id)s))", {"j_id": jobid })
+  applicants = cur.fetchall()
+
+  return render_template('applications.html', applicants=applicants)
+
+
+@app.route('/user_profile')
+def get():
+  return render_template('user_profile.html')
+
+@app.route('/company_profile')
+def getcompany_profile():
+  return render_template('company_profile.html')
+
+
+@app.route('/postjob')
+def createjob():
+  return render_template('postJob.html')
 
 
 @app.route('/company/<cmpid>', methods=["GET", "POST"])

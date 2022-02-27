@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">  
-  
-<head>  
-    <title>Register</title>  
-    <meta charset="utf-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1">  
-    <link rel="stylesheet" href="https//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
-    <script src="https//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>  
-    <script src="https//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>  
-</head>  
-  
-<body>  
+{% extends "base.html" %} {% block title %}Search{% endblock %} {% block
+    content %}
   <style>
     .custom-form{
         border-radius: 10px;
@@ -73,6 +62,4 @@
       <a class="btn btn-default" href="/login" style="align:center">Already have an account? Login..</a>
   </form>
   </div>
-</body>  
-  
-</html> 
+{% endblock %}
