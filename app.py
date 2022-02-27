@@ -1,10 +1,12 @@
 import os
 import psycopg2
-from flask import Flask, render_template, redirect, request
+from flask import Blueprint, Flask, render_template, redirect, request
 from config import credentials
 
 
 app = Flask(__name__)
+
+
 
 def get_db_connection():
     """
@@ -27,6 +29,11 @@ def index():
   #drivers = cur.fetchall()
   #return render_template('index.html', drivers=drivers)  WHERE company_name = '{companyName}'
   return "Hello world"
+
+
+@app.route('/user_register', methods=['POST', 'GET'])
+def user_register():
+  return render_template('user_register.html')
 
 @app.route('/applications/<jobid>')
 def applications(jobid):
