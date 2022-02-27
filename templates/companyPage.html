@@ -44,28 +44,37 @@
     </section>
     <h3 style="margin-left:130mm;">Jobs you posted</h3>
  
-  
-
-
-        <div class="card mb-3" style="max-width: 1000px; margin-left: 130mm;">
+    <div class="container" style="margin-left: 130mm;">
+      {% for job in jobs %}
+        <div class="card mb-3" style="max-width: 1000px;">
           <div class="row g-0">
             <div class="col-md-4">
-              <img src="..." class="img-fluid rounded-start" alt="...">
+              <img src="https://cdn.pixabay.com/photo/2016/04/10/21/53/distorted-1320866_960_720.png" class="img-fluid rounded-start" alt="...">
             </div>
             <div class="col-md-8">
               <div class="card-body">
-                <h5 class="card-title">Job Title</h5>
-                <p class="card-text">Company Name</p>
-                <p class="card-text"><small class="text-muted">Job Type</small></p>
-                <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small c+blass="text-muted" style="margin-left: 2mm;">Job Location</small></p>
-                <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">Skills</small></p>
-                <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">Job Salary</small></p>
-                <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">Experience</small></p>
-                <a href="#" class="btn btn-primary">See applicants</a>
+                <h5 class="card-title">{{ job[2] }}</h5>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary active">
+                      <input type="radio" name="options" id="option1" autocomplete="off" checked> Open
+                    </label>
+                    <label class="btn btn-secondary">
+                      <input type="radio" name="options" id="option2" autocomplete="off"> Closed
+                    </label>
+                  </div>
+                
+                <p class="card-text"><small class="text-muted">{{ job[4] }}</small></p>
+                <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[1] }}</small></p>
+                <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[5] }}</small></p>
+                <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[7] }}</small></p>
+                <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[8] }}</small></p>
+                <a href="/applications/{{ job[0] }}" class="btn btn-primary">See applicants</a>
+                <a href="#" class="btn btn-primary">Delete job listing</a>
               </div>
             </div>
           </div>
         </div>
+      {% endfor %}
 
 </body>
 
