@@ -32,7 +32,7 @@
 --     role text,
 --     user_id bigint REFERENCES user_details(user_id)
 
--- );
+);
 
 -- CREATE TABLE IF NOT EXISTS user_details(
 --     user_id SERIAL PRIMARY KEY,
