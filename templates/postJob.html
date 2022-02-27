@@ -3,7 +3,7 @@
 <div class="container rounded bg-white mt-5 mb-5">
     <div class="row">
         <div class="d-flex justify-content-between align-items-center mb-3" style="margin-bottom: 25px;">
-            <h3 class="text-center">Profile Settings</h3>
+            <h3 class="text-center">Post a New Job</h3>
         </div>
 
     </div>
@@ -20,7 +20,17 @@
                     <div class="col-md-12"><label class="labels">Job Category</label><input type="text" class="form-control" placeholder="enter departments seperated by /, eg. IT/HR" value=""></div>
                     <div class="col-md-12"><label class="labels">Prerequisites</label><input type="text" class="form-control" placeholder="enter location" value=""></div>
                     <div class="col-md-12"><label class="labels">Skills</label><input type="text" class="form-control" placeholder="enter any awards awarded to your company" value=""></div>
-
+                    <div class="col-md-12">
+                        <label for="job-type">Job Type</label>
+                        <select class="form-control" id="job-type" name="job-type">
+                          <option value="--">--</option>
+                          <option value="full-time">Full Time</option>
+                          <option value="part-time">Part Time</option>
+                          <option value="internship">Internship</option>
+                          <option value="contract">Contract</option>
+                          <option value="work-from-home">Work From Home</option>
+                        </select>
+                      </div>
                     <div class="col-md-12"><label class="labels">Payrate</label><input type="text" class="form-control" placeholder="enter phone number" value=""></div>
                     <div class="col-md-12"><label class="labels">Number of Positions</label><input type="text" class="form-control" placeholder="enter email id" value=""></div>
                     <div class="col-md-12"><label class="labels">Experience required</label><input type="text" class="form-control" placeholder="enter website" value=""></div>

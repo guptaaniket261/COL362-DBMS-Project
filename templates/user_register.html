@@ -2,7 +2,7 @@
 <html lang="en">  
   
 <head>  
-    <title>Login</title>  
+    <title>Register</title>  
     <meta charset="utf-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1">  
     <link rel="stylesheet" href="https//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
@@ -51,18 +51,26 @@
   </style>
   <div class = "custom-form">
     <form class="customform" method="post" action="">
-      <h1 class="formtitle">Login</h1><br/>
+      <h1 class="formtitle">Sign Up</h1><br/>
       <h3 class="formtitle"> Welcome to grabajob</h3>
       <div class="form-group">
-          <label for="email">Email ID</label>
+          <label for="email">Login ID</label>
           <input type="email" class="form-control" name="email" id="email" placeholder="Email">
       </div>
       <div class="form-group">
           <label for="password">Password</label>
           <input type="password" class="form-control" name="password" id="password" placeholder="Password">
       </div>
-      <button type="submit" class="btn btn-default">Login</button>
-      <a class="btn btn-default" href="/user_register" style="align:center">First time? Sign Up..</a>
+      <div style="text-align:center;">
+        <p style="float:left; margin-left: 10%;">Register as :</p>
+        <input type="radio" id="company" name="user_type" value="company">
+        <label for="company">Company</label><br>
+        <input type="radio" id="user" name="user_type" value="applicant">
+        <label for="user">Applicant</label><br>
+      </div>
+
+      <button type="submit" class="btn btn-default">Register</button>
+      <a class="btn btn-default" href="/login" style="align:center">Already have an account? Login..</a>
   </form>
   </div>
 </body>  
