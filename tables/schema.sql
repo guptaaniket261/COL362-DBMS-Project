@@ -10,7 +10,6 @@ CREATE table IF NOT EXISTS company_details(
     email text,
     website text
 ); 
-\copy company_details from tables/company_details.csv DELIMITER ',' CSV HEADER;
 
 CREATE table IF NOT EXISTS job_details(
     job_id bigint PRIMARY KEY,
@@ -27,7 +26,6 @@ CREATE table IF NOT EXISTS job_details(
 ); 
 
 
-\copy job_details from tables/job_details.csv DELIMITER ',' CSV HEADER;
 
 
  CREATE TABLE IF NOT EXISTS user_details(
@@ -38,27 +36,23 @@ CREATE table IF NOT EXISTS job_details(
      gender CHAR(1),
      ethnicity text,
      address text,
+     state text,
      email text,
-     contact char(10)
+     contact char(10),
+     Education text
  );
 
  CREATE TABLE IF NOT EXISTS experiences(
     exp_id bigint PRIMARY KEY,
+    company text,
     start_year bigint,
     years bigint,
     role text,
-    user_id bigint REFERENCES user_details(user_id),
+    user_id bigint REFERENCES user_details(user_id)
 
 );
 
- /*
- CREATE TABLE IF NOT EXISTS applications(
-     application_id bigint PRIMARY KEY,
-     job_id bigint REFERENCES job_details(job_id),
-     user_id bigint REFERENCES user_details(user_id),
-     status smallint
- );
-
- INSERT INTO user_details(user_id, firstname, lastname, contact) VALUES(1, 'Hello', 'World', '0000000000');
- INSERT INTO applications VALUES(1,16349, 1, 1);
- */
+\copy company_details from tables/company_details.csv DELIMITER ',' CSV HEADER;
+\copy job_details from tables/job_details.csv DELIMITER ',' CSV HEADER;
+\copy user_details from tables/userDetailsNew.csv DELIMITER ',' CSV HEADER;
+\copy experiences from tables/experiencesNew.csv DELIMITER ',' CSV HEADER;

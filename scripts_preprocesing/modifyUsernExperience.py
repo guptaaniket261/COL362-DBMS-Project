@@ -14,7 +14,7 @@ user_data = pd.read_csv('userDetails.csv')
 user_df = pd.DataFrame(user_data)
 #print(exp_data)
 #print(user_data)
-'''
+
 newFields = ["userId","firstname","lastname","age","gender","ethnicity","address","state","email","contact","Education"]
 
 exps = user_df.iloc[:]['pastExperience']
@@ -30,12 +30,14 @@ for i in range(len(exps)):
     arr.append([i+1, num_arr[1]])
 
 newdataset = []
+count = 1
 for idx, row in exp_data.iterrows():
     
     for k in range(len(arr)):
         if arr[k][1] == int(row['exp_id']):
             rr = []
-            rr.append(row["exp_id"])
+            rr.append(count)
+            count += 1
             rr.append(row["company"])
             rr.append(row["start_year"])
             rr.append(row["years"])
@@ -52,8 +54,9 @@ with open('experiencesNew', 'w') as f:
     write.writerow(fields)
 
     write.writerows(newdataset)
-'''    
+    
 
-
+'''
 del user_df['pastExperience']
 user_df.to_csv('new.csv', index=False)
+'''
