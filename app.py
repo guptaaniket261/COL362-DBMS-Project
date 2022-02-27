@@ -2,10 +2,9 @@ import os
 import psycopg2
 from flask import Blueprint, Flask, render_template, redirect, request, flash
 from config import credentials
-
+from models import *
 
 app = Flask(__name__)
-
 
 def get_db_connection():
     """
@@ -18,6 +17,7 @@ def get_db_connection():
       password = credentials['password']
     )
     return conn
+
 
 @app.route('/')
 def index():
@@ -33,11 +33,12 @@ def login():
     cur = conn.cursor()
     cur.execute("SELECT * FROM login_details WHERE login_id = %s AND password = %s", (email, password))
     user = cur.fetchone()
+    cur.execute("select user_id from user_details where email = %(o)s", {'o': email})
+    user_id = cur.fetchone()
     if user:
-      return redirect('/user')
+      return redirect('/user_{0}'.format(user_id[0]))
     else:
       return render_template('loginPage.html')
-  
   return render_template('loginPage.html')
 
 
@@ -56,38 +57,44 @@ def user_register():
     user = cur.fetchone()
     if user:
       print("User already exists")
-      flash('User already exists',category='error')
+      # flash('User already exists',category='error')
       return redirect('/user_register')
     else:
       if user_type == "applicant":
-        cur.execute("INSERT INTO user_details VALUES (DEFAULT, NULL, NULL,NULL,NULL,NULL,NULL,NULL,%(o)s, NULL, NULL)", {'o': str(email)})
+        cur.execute("select max(user_id) from user_details")
+        userid = cur.fetchone()[0] + 1
+        cur.execute("INSERT INTO user_details VALUES (%(userid)s, NULL, NULL,NULL,NULL,NULL,NULL,NULL,%(o)s, NULL, NULL)", {'o': str(email), 'userid': userid})
         conn.commit()
-        cur.execute("select user_id from user_details where email = %s", (email))
-        user_id = cur.fetchone()
-        print("=====================")
-        print(user_id)
-        print("=====================")
         
-        cur.execute("INSERT INTO login_details VALUES (DEFAULT, %(email)s, %(password)s, 'applicant', %(userid)s, NULL)", {'email': str(email), 'password': str(password), 'userid': str(user_id[0])})
+        print("=====================")
+        print(userid)
+        print("=====================")
+
+        cur.execute("select max(pid) from login_details")
+        pid = cur.fetchone()[0] + 1
+        cur.execute("INSERT INTO login_details VALUES (%(pid)s, %(email)s, %(password)s, 'applicant', %(userid)s, NULL)", {'email': str(email), 'password': str(password), 'userid': userid, 'pid': pid})
         conn.commit()
-        # cur.execute("INSERT INTO login_details VALUES (DEFAULT, %s, %s, %s, %s, NULL)", (email, password, "user", user[]))
-        # conn.commit()
-        # flash('User registered successfully',category='success')
     return redirect('/login')
   return render_template('user_register.html')
 
 
-@app.route('/user')
-def user():
-  # if(userDetails.user_id == -1):
-  #   return redirect('/login')
-  return redirect('/user/0')
+@app.route('/user_<int:userid>', methods=['POST', 'GET'])
+def user(userid):
+  print(userid)
+  return redirect('/user_{0}/0'.format(userid))
 
-@app.route('/user/<offset>', methods=["GET", "POST"])
-def userpage(offset):
+
+@app.route('/user_<int:userid>/<offset>', methods=["GET", "POST"])
+def userpage(userid, offset):
   # print("==========================")
   # print(USER_DETAILS.firstname)
   # print("==========================")
+  conn = get_db_connection()
+  cur = conn.cursor()
+  cur.execute("select * from user_details where user_id = %(o)s", {'o': userid})
+  user = cur.fetchone()
+  userDetail = UserDetails(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10])
+
   print(request.form)
   if offset.isnumeric():
     pg = int(float(offset))
@@ -95,10 +102,7 @@ def userpage(offset):
   else:
     start = 0
     pg = 0
-  if request.method == "GET":
-    conn = get_db_connection()
-    cur = conn.cursor()
-    
+  if request.method == "GET":   
     cur.execute("""SELECT job_id, company_details.company_name, location, 
                   title, description, job_type, prerequisites, skills, 
                   pay_rate, no_positions, experience_required 
@@ -127,7 +131,7 @@ def userpage(offset):
       if i >= 0 and i<mxPg:
         pgs.append(i)
 
-    return render_template('userPage.html', jobs = jobs, pgs = pgs, curr_pg = pg, locations = locations, companies = companies, categories = categories)
+    return render_template('userPage.html', jobs = jobs, pgs = pgs, curr_pg = pg, locations = locations, companies = companies, categories = categories, user = userDetail)
   
 
   if request.method == "POST":
@@ -178,10 +182,29 @@ def userpage(offset):
     cur.execute("SELECT distinct(skills) FROM job_details")
     categories = cur.fetchall()
     pg = -1
-    return render_template('userPage.html', jobs = jobs, pgs = [pg, pg+1, pg+2, pg+3], curr_pg = pg, locations = locations, companies = companies, categories = categories)
+    return render_template('userPage.html', jobs = jobs, pgs = [pg, pg+1, pg+2, pg+3], curr_pg = pg, locations = locations, companies = companies, categories = categories, user = userDetail)
 
-  return redirect('/user/0')
+  return redirect('/user_{0}/0'.format(userid))
 
+
+@app.route('/job_apply_<int:userid>/<int:jobid>', methods=["GET", "POST"])
+def applyForJob(userid, jobid):
+  conn = get_db_connection()
+  cur = conn.cursor()
+  if request.method == "GET":
+    print("==========================")
+    print(request.form)
+    print("==========================")
+    cur.execute("SELECT * FROM applications WHERE job_id = %(o)s and user_id = %(u)s", {'o': jobid, 'u': userid})
+    job = cur.fetchone()
+    if job is None:
+      cur.execute("select max(application_id) from applications")
+      application_id = cur.fetchone()[0] + 1
+      cur.execute("insert into applications values(%(a)s, %(j)s, %(u)s, 0)", {'a': application_id, 'u': userid, 'j': jobid})
+      conn.commit()
+    return redirect('/user_{0}/0'.format(userid))
+  else:
+    return redirect('/login')
 
 
 @app.route('/applications/<jobid>')
@@ -194,6 +217,42 @@ def applications(jobid):
   applicants = cur.fetchall()
 
   return render_template('applications.html', applicants=applicants)
+
+
+@app.route('/job_details_<int:userid>/<int:jobid>')
+def jobDetails(jobid, userid):
+  conn = get_db_connection()
+  cur = conn.cursor()
+  cur.execute("SELECT * FROM job_details WHERE job_id = %(o)s", {"o": jobid})
+  job = cur.fetchone()
+  cur.execute("SELECT * FROM company_details WHERE company_id = %(o)s", {"o": job[1]})
+  company = cur.fetchone()
+  job_detail = JobDetail(job[0], company[1], job[2], job[3], job[4], job[5], job[6], job[7], job[8], job[9], company[2], company[7], company[8])
+  return render_template('job_detail.html', job_detail=job_detail, userid=userid)
+
+
+@app.route('/jobsApplied_<int:userid>')
+def jobs_applied(userid):
+  conn = get_db_connection()
+  cur = conn.cursor()
+  cur.execute('''SELECT job_id, company_details.company_name,  
+                    title, description, job_type, prerequisites, skills, 
+                    pay_rate, no_positions, experience_required , location, 
+                    contact, email, applications.status
+                    FROM (select * from job_details where status = '1') as jobs
+                    join company_details on
+                    company_details.company_id = jobs.company_id 
+                    join applications on
+                    applications.job_id = jobs.job_id 
+                    and applications.user_id = %(u)s''', {"u": userid})
+  jobs = cur.fetchall()
+  jobs_applied = []
+  status_map = {0: "APPLICATION IN PROCESS", 1: "APPLICATION ACCEPTED", 2: "APPLICATION REJECTED"}
+  for job in jobs:
+    job_detail = JobDetail(job[0], job[1], job[2], job[3], job[4], job[5], job[6], job[7], job[8], job[9], job[10], job[11], job[12], job[13])
+    jobs_applied.append(job_detail)
+
+  return render_template('jobsApplied.html', jobs_applied=jobs_applied, user_id=userid)
 
 
 @app.route('/user_profile')

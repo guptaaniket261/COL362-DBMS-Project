@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Jobs Applied</title>
+    <meta charset="utf-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1">  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>  
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>  
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css" integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+
+<body style="margin-left: 30mm; margin-right: 30mm; margin-bottom: 30mm;">
+    <section id = "nav-bar">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a class="navbar-brand" href="#">Grabajob</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="/user_{{ user_id }}/0">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Jobs Applied</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/user_profile">User Profile</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">About US</a>
+                </li>
+              </ul>
+              
+
+              <form class="d-flex" method="POST">
+                <input class="form-control me-2" placeholder="Search" aria-label="Search" name="tag" >
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+            </div>
+          </nav>
+    </section>
+    
+
+    <div class="container" style="float: right; width:60%; margin-left: 3%; margin-right: 4%;">
+      <h3 style="margin-left:130mm;">Jobs Applied</h3>
+    
+
+    {% for job_detail in jobs_applied %}
+      <div class="card mb-3" style="max-width: 1000px;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="..." class="img-fluid rounded-start" alt="...">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{job_detail.job_title}}</h5>
+              <p class="card-text">{{job_detail.company}}</p>
+              <p class="card-text"><small class="text-muted">{{job_detail.job_type}}</small></p>
+              <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{job_detail.location}}</small></p>
+              <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{job_detail.prerequisites}}</small></p>
+              <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{job_detail.pay_rate}}</small></p>
+              <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{job_detail.experience_required}}</small></p>
+              <p class="fa fa-envelope-open-o" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{job_detail.email}}</small></p>
+              <p class="fa fa-phone-square" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{job_detail.contact}}</small></p>
+              <p class="card-text">Positions Available: {{job_detail.no_positions}}</p>
+              <br>
+              <a href="/job_apply_{{userid}}/{{job_detail.job_id}}" class="btn btn-primary">Apply</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    
+    
+    </div>
+    
+    
+
+
+</body>
+</html>
