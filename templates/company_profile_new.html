@@ -1,0 +1,64 @@
+{% extends "base.html" %} {% block title %}Profile{% endblock %} {% block content %}
+
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="d-flex justify-content-between align-items-center mb-3" style="margin-bottom: 25px;">
+            <h3 class="text-center">Profile Settings</h3>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-4 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://cdn.pixabay.com/photo/2016/04/10/21/53/distorted-1320866_960_720.png"><div class="font-weight-bold">Username</div><span class="text-black-50">user@gmail.com</span><span> </span></div>
+        </div>
+
+
+        <div class="col-md-4 border-right custom-form">
+            <form class="customform" method="post" action="">
+
+                              
+
+                <div class="row mt-2">
+                    <div class="col-md-6 form-group">
+                        <div ><label class="labels" for="cname" >Company Name</label><input type="text" name="cname" class="form-control" placeholder="company name" value="{{company_detail.company_name}}"></div>
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <div ><label class="labels" for="about">About Us</label><input type="text" name="about" class="form-control" value="{{company_detail.about_us}}" placeholder="about us"></div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-6 form-group">
+                        <div ><input type="hidden" name="key" class="form-control" value=1></div>
+                    </div>  
+                    <div class="col-md-12 form-group">
+                        <div ><label class="labels" for="depts">Departments</label><input type="text" name="depts" class="form-control" placeholder="enter departments seperated by /" value="{{company_detail.department}}"></div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <div ><label class="labels" for="location">Location</label><input type="text" name="location" class="form-control" placeholder="enter location" value="{{company_detail.location}}"></div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <div ><label class="labels" for="awds">Awards & Recognitions</label><input type="text" name="awds" class="form-control" placeholder="enter any awards awarded to your company" value="{{company_detail.awards}}"></div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <div ><label class="labels" for="contact">Contact</label><input type="text" name="contact"  class="form-control" placeholder="enter contact number" value="{{company_detail.contact}}"></div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <div ><label class="labels" for="email">Email ID</label><input type="text" class="form-control" placeholder="enter email id" value="{{company_detail.email}}" disabled="disabled" ></div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <div ><label class="labels" for="website">Website</label><input type="text" name="website" class="form-control" placeholder="website" value="{{company_detail.website}}"></div>
+                    </div>    
+                </div>
+
+                <div class="mt-5 text-center" style="padding: 20px;"><button class="btn btn-primary profile-button" type="submit">Save Profile</button></div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}

@@ -55,12 +55,15 @@
           <div class="col-md-8">
             <div class="card-body">
               <h5 class="card-title">{{ applicant[1] }} {{ applicant[2] }}</h5>
+              <p class="card-text">{{ applicant[6] }}</p>
               <p class="card-text">{{ applicant[7] }}</p>
               <p class="card-text"><small class="text-muted">{{ applicant[4] }}</small></p>
-              <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ applicant[1] }}</small></p>
               <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ applicant[5] }}</small></p>
-              <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ applicant[7] }}</small></p>
-              <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ applicant[8] }}</small></p>
+              {% for experience in experiences[applicant[9]] %}
+              <p> 
+                Worked as {{ experience[4] }} from {{ experience[2] }} to {{ experience[3] }} at {{ experience[1] }}
+              </p>
+              {% endfor %}
               <a href="#" class="btn btn-primary">Accept</a>
               <a href="#" class="btn btn-primary">Reject</a>
             </div>
