@@ -27,7 +27,10 @@
                   <a class="navbar-brand" href="#">Grabajob</a>
                 </li>
                 <li class="nav-item active">
-                  <a class="nav-link" href="/user/0">Home <span class="sr-only">(current)</span></a>
+                  <a class="nav-link" href="/user_{{ user.user_id }}/0">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/jobsApplied_{{user.user_id}}">Jobs Applied</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="/user_profile">User Profile</a>
@@ -51,6 +54,7 @@
     
     <div class="container" style="float: right; width:60%; margin-left: 3%; margin-right: 4%;">
       <h3 style="margin-left:130mm;">Jobs</h3>
+    
 
     {% for job in jobs %}
       <div class="card mb-3" style="max-width: 1000px;">
@@ -68,8 +72,8 @@
               <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[8] }}</small></p>
               <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[10] }}</small></p>
               <br>
-              <a href="#" class="btn btn-primary" style="margin-right:3%;">See Details</a>
-              <a href="#" class="btn btn-primary">Apply</a>
+              <a href="/job_details_{{user.user_id}}/{{job[0]}}" class="btn btn-primary" style="margin-right:3%;">See Details</a>
+              <a href="/job_apply_{{user.user_id}}/{{job[0]}}" class="btn btn-primary">Apply</a>
             </div>
           </div>
         </div>
@@ -81,20 +85,20 @@
     <div class="d-flex justify-content-center">
       <nav aria-label="Page navigation example">
         <ul class="pagination">
-          <li class="page-item"><a class="page-link" href="/user/0">First</a></li>
+          <li class="page-item"><a class="page-link" href="/user_{{user.user_id}}/0">First</a></li>
           {% if curr_pg > 2 %}
-            <li class="page-item"><a class="page-link" href="/user/{{pgs[0]}}">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="/user_{{user.user_id}}/{{pgs[0]}}">Previous</a></li>
           {% endif %}
           
           {% for pg in pgs[1:] %}
             {% if pg == curr_pg %}
-              <li class="page-item active"><a class="page-link" href="/user/{{pg}}">{{pg}}</a></li>
+              <li class="page-item active"><a class="page-link" href="/user_{{user.user_id}}/{{pg}}">{{pg}}</a></li>
             {% else %}
-              <li class="page-item"><a class="page-link" href="/user/{{pg}}">{{pg}}</a></li>
+              <li class="page-item"><a class="page-link" href="/user_{{user.user_id}}/{{pg}}">{{pg}}</a></li>
             {% endif %}
           {% endfor %}
           
-          <li class="page-item"><a class="page-link" href="/user/{{pgs[4]}}">Next</a></li>
+          <li class="page-item"><a class="page-link" href="/user_{{user.user_id}}/{{pgs[4]}}">Next</a></li>
         </ul>
       </nav>
     </div>
