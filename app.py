@@ -26,20 +26,23 @@ def index():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
+  print(request.method)
   if request.method == "POST":
     email = request.form['email']
     password = request.form['password']
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM login_details WHERE login_id = %s AND password = %s", (email, password))
+    cur.execute("SELECT user_id FROM login_details WHERE login_id = %s AND password = %s", (email, password))
+    conn.commit()
     user = cur.fetchone()
+    print(user)
+    conn.close()
     if user:
-      return redirect('/user')
+      return redirect("http://127.0.0.1:5000/user/'{0}'".format(user))
     else:
       return render_template('loginPage.html')
-  
   return render_template('loginPage.html')
-
+  
 
 @app.route('/user_register', methods=['POST', 'GET'])
 def user_register():
@@ -196,9 +199,35 @@ def applications(jobid):
   return render_template('applications.html', applicants=applicants)
 
 
-@app.route('/user_profile')
-def get():
-  return render_template('user_profile.html')
+@app.route('/user_profile',methods=['POST', 'GET'])
+def profile():
+    if request.method == "POST":
+      fname = request.form['fname']
+      lname = request.form['lname']
+      age = request.form['age']
+      gender = request.form['gender']
+      eth = request.form['eth']
+      address = request.form['address']
+      mobile = request.form['mobile']
+      email = request.form['email']
+      education = request.form['education']
+      country = request.form['country']
+      state = request.form['state']
+      print(fname)
+      conn = get_db_connection()
+      cur = conn.cursor()
+      cur.execute("select user_id from user_details where email = %(email)s", {'email': str(email)})
+      user_id = cur.fetchone()
+      if user_id:
+        print(user_id)
+        cur.execute("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, email = %(email)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid': str(user_id[0]), 'fname': str(fname), 'lname': str(lname),'age': str(age), 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'email': str(email), 'mobile': str(mobile), 'education': str(education)})
+        conn.commit()
+        print("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, email = %(email)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid': str(user_id[0]), 'fname': str(fname), 'lname': str(lname),'age': str(age), 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'email': str(email), 'mobile': str(mobile), 'education': str(education)})
+        flash("User profile updated successfully.")
+
+    return render_template('user_profile.html')
+
+
 
 @app.route('/company_profile')
 def getcompany_profile():
