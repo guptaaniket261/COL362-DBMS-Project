@@ -34,12 +34,12 @@ def login():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute("SELECT user_id FROM login_details WHERE login_id = %s AND password = %s", (email, password))
-    conn.commit()
+    
     user = cur.fetchone()
     print(user)
     conn.close()
     if user:
-      return redirect("http://127.0.0.1:5000/user/'{0}'".format(user))
+      return redirect("http://127.0.0.1:5000/user/'{0}'".format(user[0]))
     else:
       return render_template('loginPage.html')
     # print("==============================")
@@ -233,7 +233,6 @@ def applications(jobid):
   return render_template('applications.html', applicants=applicants)
 
 
-<<<<<<< HEAD
 @app.route('/user_profile',methods=['POST', 'GET'])
 def profile():
     if request.method == "POST":
@@ -263,7 +262,6 @@ def profile():
     return render_template('user_profile.html')
 
 
-=======
 @app.route('/job_details_<int:userid>/<int:jobid>')
 def jobDetails(jobid, userid):
   conn = get_db_connection()
@@ -303,7 +301,6 @@ def jobs_applied(userid):
 @app.route('/user_profile')
 def get():
   return render_template('user_profile.html')
->>>>>>> 4d4514340c06922b17e63086a291cf0bf2c895e2
 
 
 
