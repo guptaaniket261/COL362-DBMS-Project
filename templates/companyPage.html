@@ -29,13 +29,13 @@
                   <a class="nav-link" href="/company_{{company_detail.company_id}}">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="/company_profile">Company Profile</a>
+                  <a class="nav-link" href="/company_profile_{{company_detail.company_id}}">Company Profile</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="#">About US</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/postjob">Post a job</a>
+                    <a class="nav-link" href="/postjob_{{company_detail.company_id}}">Post a job</a>
                 </li>
               </ul>
               
@@ -71,7 +71,7 @@
     <div class="container" style="margin-left: 10%;">
       <h3>Jobs you Posted</h3>
       {% for job in jobs %}
-        <div class="card mb-3" style="max-width: 1000px;">
+        <div class="card mb-3" style="max-width: 70%; float:right; margin-right: 10%;">
           <div class="row g-0">
             <div class="col-md-8">
               <div class="card-body">
@@ -80,7 +80,9 @@
                 <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job.location }}</small></p>
                 <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job.experience_required }}</small></p>
                 <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job.pay_rate }}</small></p>
+                <p class="fa fa-child" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job.no_positions }}</small></p>
                 <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job.prerequisites }}</small></p>
+
                 <h4>Job Description</h4>
                 <p class="card-text">{{job.description}}</p>
                 {% if job.job_status == "OPEN" %}
