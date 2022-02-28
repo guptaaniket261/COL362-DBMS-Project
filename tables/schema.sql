@@ -40,15 +40,6 @@
 --     Education text
 -- );
 
---  CREATE TABLE IF NOT EXISTS experiences(
---     exp_id SERIAL PRIMARY KEY,
---     start_year bigint,
---     years bigint,
---     role text,
---     user_id bigint REFERENCES user_details(user_id)
-
--- );
-
 
 CREATE TABLE IF NOT EXISTS experiences(
     exp_id SERIAL PRIMARY KEY,
@@ -76,6 +67,7 @@ CREATE TABLE IF NOT EXISTS experiences(
 --     user_id bigint REFERENCES user_details(user_id),
 --     company_id bigint REFERENCES company_details(company_id)
 -- );
+
 
 -- \copy company_details from 'company_details_latest.csv' DELIMITER ',' CSV HEADER;
 -- \copy job_details from 'job_details.csv' DELIMITER ',' CSV HEADER;

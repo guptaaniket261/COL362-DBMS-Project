@@ -1,3 +1,4 @@
+from math import exp
 import os
 import psycopg2
 from flask import Blueprint, Flask, render_template, redirect, request, flash, session
@@ -258,9 +259,20 @@ def applications(jobid):
   return render_template('applications.html', applicants=applicants)
 
 
-@app.route('/user_profile',methods=['POST', 'GET'])
-def profile():
-    if request.method == "POST":
+@app.route('/user_profile_<int:userid>',methods=['POST', 'GET'])
+def profile(userid):
+  if not session.get('userid'):
+    return redirect('/login')
+  if session.get('userid') != userid:
+    return redirect('/login')
+
+  print("==========================")
+  print(request.form)
+  print("==========================")
+  conn = get_db_connection()
+  cur = conn.cursor()
+  if request.method == "POST":
+    if request.form['key'] == 1:
       fname = request.form['fname']
       lname = request.form['lname']
       age = request.form['age']
@@ -268,23 +280,33 @@ def profile():
       eth = request.form['eth']
       address = request.form['address']
       mobile = request.form['mobile']
-      email = request.form['email']
+      # email = request.form['email']
       education = request.form['education']
-      country = request.form['country']
+      # country = request.form['country']
       state = request.form['state']
-      print(fname)
-      conn = get_db_connection()
-      cur = conn.cursor()
-      cur.execute("select user_id from user_details where email = %(email)s", {'email': str(email)})
-      user_id = cur.fetchone()
-      if user_id:
-        print(user_id)
-        cur.execute("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, email = %(email)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid': str(user_id[0]), 'fname': str(fname), 'lname': str(lname),'age': str(age), 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'email': str(email), 'mobile': str(mobile), 'education': str(education)})
-        conn.commit()
-        print("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, email = %(email)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid': str(user_id[0]), 'fname': str(fname), 'lname': str(lname),'age': str(age), 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'email': str(email), 'mobile': str(mobile), 'education': str(education)})
-        flash("User profile updated successfully.")
+        
+      cur.execute("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid':userid,  'fname': str(fname), 'lname': str(lname),'age': age, 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'mobile': str(mobile), 'education': str(education)})
+      conn.commit()
+      # print("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, email = %(email)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid': str(user_id[0]), 'fname': str(fname), 'lname': str(lname),'age': str(age), 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'email': str(email), 'mobile': str(mobile), 'education': str(education)})
+      flash("User profile updated successfully.", category = 'success')
+    else:
+      cur.execute("select max(exp_id) from experiences")
+      exp_id = cur.fetchone()[0] + 1
+      company = request.form['company']
+      start = int(request.form['start'])
+      end = int(request.form['end'])
+      role = request.form['exp']
+      cur.execute("INSERT INTO experiences VALUES(%(exp_id)s, %(company)s, %(start)s, %(end)s, %(role)s, %(userid)s)", {'exp_id': exp_id, 'userid': userid, 'start': start, 'end': end, 'role': role, 'company': company})
+      conn.commit()
 
-    return render_template('user_profile.html')
+
+  cur.execute("select * from experiences where user_id = %(userid)s", {'userid': userid})
+  experiences = cur.fetchall()
+
+  cur.execute("select * from user_details where user_id = %(userid)s", {'userid': userid})
+  userDetail = cur.fetchone()
+  user_detail = UserDetails(userDetail[0], userDetail[1], userDetail[2], userDetail[3], userDetail[4], userDetail[5], userDetail[6], userDetail[7], userDetail[8], userDetail[9], userDetail[10])
+  return render_template('user_profile.html', user_detail=user_detail, experiences=experiences)
 
 
 @app.route('/job_details_<int:userid>/<int:jobid>')
@@ -331,9 +353,6 @@ def jobs_applied(userid):
   return render_template('jobsApplied.html', jobs_applied=jobs_applied, user_id=userid)
 
 
-@app.route('/user_profile')
-def get():
-  return render_template('user_profile.html')
 
 @app.route('/company_<cmpid>', methods=["GET", "POST"])
 def cmppage(cmpid):
