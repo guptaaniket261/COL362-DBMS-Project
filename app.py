@@ -1,3 +1,4 @@
+from crypt import methods
 from math import exp
 import os
 import psycopg2
@@ -248,19 +249,29 @@ def applyForJob(userid, jobid):
 
 @app.route('/applications_<jobid>')
 def applications(jobid):
-  # return render_template('loginPage.html')
   conn = get_db_connection()
   cur = conn.cursor()
-  # TODO Query to be changed
-  cur.execute("""SELECT application_id, firstname, lastname, age, gender, education, email, contact, status FROM 
+  
+  cur.execute("""SELECT application_id, firstname, lastname, age, gender, education, email, contact, status, user_id FROM 
   (user_details NATURAL JOIN (SELECT * FROM applications WHERE  job_id = %(j_id)s) b) a""", {"j_id": jobid })
   applicants = cur.fetchall()
 
-  return render_template('applications.html', applicants=applicants)
+  cur.execute("""SELECT * FROM experiences WHERE user_id IN 
+  (SELECT user_id FROM applications WHERE job_id = %(j_id)s )""", {"j_id": jobid })
+  exp = cur.fetchall()
+  experiences = {}
+  for e in exp:
+    if e[5] in experiences:
+      experiences[e[5]].append(e)
+    else:
+      experiences[e[5]] = []
+      experiences[e[5]].append(e)
+  #print(experiences)
+  return render_template('applications.html', applicants=applicants, experiences=experiences)
 
 
 @app.route('/user_profile_<int:userid>',methods=['POST', 'GET'])
-def profile(userid):
+def user_profile(userid):
   if not session.get('userid'):
     return redirect('/login')
   if session.get('userid') != userid:
@@ -308,6 +319,39 @@ def profile(userid):
   user_detail = UserDetails(userDetail[0], userDetail[1], userDetail[2], userDetail[3], userDetail[4], userDetail[5], userDetail[6], userDetail[7], userDetail[8], userDetail[9], userDetail[10])
   return render_template('user_profile.html', user_detail=user_detail, experiences=experiences)
 
+@app.route('/company_profile_<int:cmpid>',methods=['POST', 'GET'])
+def company_profile(cmpid):
+  if not session.get('companyid'):
+    return redirect('/login')
+  if int(session.get('companyid')) != int(cmpid):
+    return redirect('/login')
+  print("==========================")
+  print(request.form)
+  print("==========================")
+  conn = get_db_connection()
+  cur = conn.cursor()
+  if request.method == "POST":
+    if request.form['key'] == 1:
+      cname = request.form['cname']
+      about = request.form['about']
+      depts = request.form['depts']
+      location = request.form['location']
+      awds = request.form['awds']
+      contact = request.form['contact']
+      # email = request.form['email']
+      website = request.form['website']
+        
+      cur.execute("UPDATE company_details SET company_name = %(cname)s, about_us = %(abt)s, department = %(dep)s, location = %(loc)s, awards = %(awd)s, contact = %(cont)s, website = %(webs)s WHERE company_id = %(compid)s", {'compid':cmpid,  'cname': str(cname), 'abt': str(about),'dep': str(depts), 'loc': str(location), 'awd': str(awds),'cont': str(contact), 'webs': str(website)})
+      conn.commit()
+      # print("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, email = %(email)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid': str(user_id[0]), 'fname': str(fname), 'lname': str(lname),'age': str(age), 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'email': str(email), 'mobile': str(mobile), 'education': str(education)})
+      flash("Company profile updated successfully.", category = 'success')
+
+
+  cur.execute("select * from company_details where company_id = %(compid)s", {'compid': cmpid})
+  compDetail = cur.fetchone()
+  company_detail = companyDetails(compDetail[0], compDetail[1], compDetail[2], compDetail[3], compDetail[4], compDetail[5], compDetail[6], compDetail[7], compDetail[8], compDetail[9])
+  return render_template('company_profile_new.html', company_detail=company_detail)
+  
 
 @app.route('/job_details_<int:userid>/<int:jobid>')
 def jobDetails(jobid, userid):
