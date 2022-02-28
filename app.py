@@ -39,7 +39,7 @@ def login():
     password = request.form['password']
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT user_id FROM login_details WHERE login_id = %s AND password = %s", (email, password))
+    cur.execute("SELECT * FROM login_details WHERE login_id = %s AND password = %s", (email, password))
     
     user = cur.fetchone()
     if not user:
@@ -245,13 +245,14 @@ def applyForJob(userid, jobid):
     return redirect('/login')
 
 
-@app.route('/applications/<jobid>')
+@app.route('/applications_<jobid>')
 def applications(jobid):
   # return render_template('loginPage.html')
   conn = get_db_connection()
   cur = conn.cursor()
   # TODO Query to be changed
-  cur.execute("SELECT application_id, firstname, lastname, age, gender, education, email, contact, status FROM user_details NATURAL JOIN (SELECT * FROM applications WHERE  job_id = %(j_id)s))", {"j_id": jobid })
+  cur.execute("""SELECT application_id, firstname, lastname, age, gender, education, email, contact, status FROM 
+  (user_details NATURAL JOIN (SELECT * FROM applications WHERE  job_id = %(j_id)s) b) a""", {"j_id": jobid })
   applicants = cur.fetchall()
 
   return render_template('applications.html', applicants=applicants)
