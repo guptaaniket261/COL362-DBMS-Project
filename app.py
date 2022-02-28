@@ -255,13 +255,17 @@ def applyForJob(userid, jobid):
     return redirect('/login')
 
 
-@app.route('/applications_<jobid>')
-def applications(jobid):
+@app.route('/applications_<cmpid>_<jobid>')
+def applications(cmpid, jobid):
+  if not session.get('companyid'):
+    return redirect('/login')
+  if int(session.get('companyid')) != int(cmpid):
+    return redirect('/login')
   conn = get_db_connection()
   cur = conn.cursor()
   
   cur.execute("""SELECT application_id, firstname, lastname, age, gender, education, email, contact, status, user_id FROM 
-  (user_details NATURAL JOIN (SELECT * FROM applications WHERE  job_id = %(j_id)s) b) a""", {"j_id": jobid })
+  (user_details NATURAL JOIN (SELECT * FROM applications WHERE  job_id = %(j_id)s) b) a ORDER BY application_id""", {"j_id": jobid })
   applicants = cur.fetchall()
 
   cur.execute("""SELECT * FROM experiences WHERE user_id IN 
@@ -275,7 +279,7 @@ def applications(jobid):
       experiences[e[5]] = []
       experiences[e[5]].append(e)
   #print(experiences)
-  return render_template('applications.html', applicants=applicants, experiences=experiences)
+  return render_template('applications.html', applicants=applicants, experiences=experiences, cmpid=cmpid, jobid = jobid)
 
 
 @app.route('/user_profile_<int:userid>',methods=['POST', 'GET'])
@@ -339,6 +343,8 @@ def company_profile(cmpid):
   conn = get_db_connection()
   cur = conn.cursor()
   if request.method == "POST":
+    print('request key')
+    print(request.form['key'])
     if request.form['key'] == 1:
       cname = request.form['cname']
       about = request.form['about']
@@ -357,6 +363,7 @@ def company_profile(cmpid):
 
   cur.execute("select * from company_details where company_id = %(compid)s", {'compid': cmpid})
   compDetail = cur.fetchone()
+  print(compDetail)
   company_detail = companyDetails(compDetail[0], compDetail[1], compDetail[2], compDetail[3], compDetail[4], compDetail[5], compDetail[6], compDetail[7], compDetail[8], compDetail[9])
   return render_template('company_profile_new.html', company_detail=company_detail)
   
@@ -462,7 +469,23 @@ def update_job_status(cmpid, jobid, newstatus):
   conn.commit()
   return redirect('/company_' + str(cmpid))
 
-
+@app.route('/update_appl_status_<int:cmpid>_<int:jobid>_<int:appid>_<int:newstatus>')
+def update_appl_status(cmpid, jobid, appid, newstatus):
+    if not session.get('companyid'):
+      return redirect('/login')
+    if int(session.get('companyid')) != int(cmpid):
+      return redirect('/login')
+    conn = get_db_connection()
+    cur = conn.cursor()
+    newstatus = int(newstatus)
+    if newstatus == 1:
+      print('here1')
+      cur.execute("UPDATE applications SET status = 1 WHERE application_id = %(o2)s", {"o2": appid})
+    elif newstatus == 2:
+      print('here1')
+      cur.execute("UPDATE applications SET status = 2 WHERE application_id = %(o2)s", {"o2": appid})
+    conn.commit()
+    return redirect('/applications_' + str(cmpid) + '_' + str(jobid))
 
 @app.route('/company_profile')
 def getcompany_profile():

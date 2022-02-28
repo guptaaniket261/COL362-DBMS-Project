@@ -29,7 +29,7 @@
                   <a class="nav-link" href="/company_{{company_detail.company_id}}">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="/company_profile">Company Profile</a>
+                  <a class="nav-link" href="/company_profile_{{company_detail.company_id}}">Company Profile</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="#">About US</a>
@@ -89,7 +89,7 @@
                   <h4>Status: Closed</h4>
                 {% endif %}
                 <br>
-                <a href="/applications/{{ job.job_id }}" class="btn btn-primary">See applicants</a>
+                <a href="/applications_{{company_detail.company_id}}_{{ job.job_id }}" class="btn btn-primary">See applicants</a>
                 <a href="/delete_job_{{company_detail.company_id}}/{{job.job_id}}" class="btn btn-primary">Delete job listing</a>
                 {% if job.job_status == "OPEN" %}
                   <a href="/update_job_status_{{company_detail.company_id}}_{{job.job_id}}_{{0}}" class="btn btn-primary">Close applications for this job</a>

@@ -64,8 +64,17 @@
                 Worked as {{ experience[4] }} from {{ experience[2] }} to {{ experience[3] }} at {{ experience[1] }}
               </p>
               {% endfor %}
-              <a href="#" class="btn btn-primary">Accept</a>
-              <a href="#" class="btn btn-primary">Reject</a>
+              {% if applicant[8] == 0 %}
+                <a href="/update_appl_status_{{cmpid}}_{{jobid}}_{{applicant[0]}}_1" class="btn btn-primary">Accept</a>
+                <a href="/update_appl_status_{{cmpid}}_{{jobid}}_{{applicant[0]}}_2" class="btn btn-primary">Reject</a>
+              {% else %}
+                {% if applicant[8] == 1 %}
+                <p class="card-text" style="color: green;">Accepted</p>
+                {% else %}    
+                <p class="card-text" style="color: red;">Rejected</p>
+                {% endif %}
+              {% endif %}
+
             </div>
           </div>
         </div>
