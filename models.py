@@ -35,6 +35,20 @@ class JobDetail:
     self.status = status
 
 
+class companyDetails:
+  def __init__(self, company_id, company_name, location, department, about_us, rating, awards, contact, email, website):
+    self.company_id = company_id
+    self.company_name = company_name
+    self.location = location
+    self.department = department
+    self.about_us = about_us
+    self.rating = rating
+    self.awards = awards
+    self.contact = contact
+    self.email = email
+    self.website = website
+
+
 
     
     

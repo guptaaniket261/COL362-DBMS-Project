@@ -1,11 +1,18 @@
 from asyncio.windows_events import NULL
 import os
 import psycopg2
-from flask import Blueprint, Flask, render_template, redirect, request, flash
+from flask import Blueprint, Flask, render_template, redirect, request, flash, session
 from config import credentials
 from models import *
+from flask_session import Session
+
 
 app = Flask(__name__)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+app.secret_key = '4356528348'
+
 
 def get_db_connection():
     """
@@ -34,18 +41,28 @@ def login():
     cur = conn.cursor()
     cur.execute("SELECT * FROM login_details WHERE login_id = %s AND password = %s", (email, password))
     user = cur.fetchone()
-    print("==============================")
-    print(user[4], type)
-    print("==============================")
+    if not user:
+      flash("Invalid email or password")
+      return redirect('/login')
+
+
     if user[4] != None:
-      # cur.execute("select user_id from user_details where user_id = %(o)s", {'o': user[4]})
-      # user_id = cur.fetchone()
+      # session.clear()
+      session['userid'] = user[4]
       return redirect('/user_{0}'.format(user[4]))
     else:
-      # cur.execute("select company_id from company_details where email = %(o)s", {'o': email})
+      session['companyid'] = user[5]
+      print("==============================")
+      print(session.get('companyid'))
+      print("==============================")
       return redirect('/company_{0}'.format(user[5]))
 
   return render_template('loginPage.html')
+
+@app.route('/logout')
+def logout():
+  session.clear()
+  return redirect('/login')
 
 
 @app.route('/user_register', methods=['POST', 'GET'])
@@ -86,7 +103,13 @@ def user_register():
 
 @app.route('/user_<int:userid>', methods=['POST', 'GET'])
 def user(userid):
-  print(userid)
+  # print(userid, session['username'])
+  if not session.get('userid'):
+    return redirect('/login')
+  if session.get('userid') != userid:
+    return redirect('/login')
+  # print(type(session.get('userid')), type(userid))
+  
   return redirect('/user_{0}/0'.format(userid))
 
 
@@ -95,6 +118,10 @@ def userpage(userid, offset):
   # print("==========================")
   # print(USER_DETAILS.firstname)
   # print("==========================")
+  if not session.get('userid'):
+    return redirect('/login')
+  if session.get('userid') != userid:
+    return redirect('/login')
   conn = get_db_connection()
   cur = conn.cursor()
   cur.execute("select * from user_details where user_id = %(o)s", {'o': userid})
@@ -195,6 +222,10 @@ def userpage(userid, offset):
 
 @app.route('/job_apply_<int:userid>/<int:jobid>', methods=["GET", "POST"])
 def applyForJob(userid, jobid):
+  if not session.get('userid'):
+    return redirect('/login')
+  if session.get('userid') != userid:
+    return redirect('/login')
   conn = get_db_connection()
   cur = conn.cursor()
   if request.method == "GET":
@@ -227,6 +258,10 @@ def applications(jobid):
 
 @app.route('/job_details_<int:userid>/<int:jobid>')
 def jobDetails(jobid, userid):
+  if not session.get('userid'):
+    return redirect('/login')
+  if session.get('userid') != userid:
+    return redirect('/login')
   conn = get_db_connection()
   cur = conn.cursor()
   cur.execute("SELECT * FROM job_details WHERE job_id = %(o)s", {"o": jobid})
@@ -239,6 +274,10 @@ def jobDetails(jobid, userid):
 
 @app.route('/jobsApplied_<int:userid>')
 def jobs_applied(userid):
+  if not session.get('userid'):
+    return redirect('/login')
+  if session.get('userid') != userid:
+    return redirect('/login')
   conn = get_db_connection()
   cur = conn.cursor()
   cur.execute('''SELECT jobs.job_id, company_details.company_name,  
@@ -265,8 +304,32 @@ def jobs_applied(userid):
 def get():
   return render_template('user_profile.html')
 
+@app.route('/company_<cmpid>', methods=["GET", "POST"])
+def cmppage(cmpid):
+  if not session.get('companyid'):
+    return redirect('/login')
+  if int(session.get('companyid')) != int(cmpid):
+    return redirect('/login')
 
-
+  if request.method == "GET":
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM company_details WHERE company_id = %(o)s", {"o": cmpid})
+    company = cur.fetchone()
+    company_detail = companyDetails(company[0], company[1], company[2], company[3], company[4], company[5], company[6], company[7], company[8], company[9])
+    cur.execute("SELECT * FROM job_details WHERE company_id = %(c)s", {"c": cmpid})
+    jobs = cur.fetchall()
+    job_details = []
+    for job in jobs:
+      job_details.append(JobDetail(job[0], company[1], job[2], job[3], job[4], job[5], job[6], job[7], job[8], job[9], company[2], company[7], company[8]))
+    return render_template('companyPage.html', jobs = job_details, company_detail = company_detail)
+  
+  if request.method == "POST":
+    print("==========================")
+    print("Handling POST request")
+    print("==========================")
+    # TODO Needs to be changed
+    return redirect('/user/0')
 
 
 @app.route('/company_profile')
@@ -279,28 +342,7 @@ def createjob():
   return render_template('postJob.html')
 
 
-@app.route('/company_<cmpid>', methods=["GET", "POST"])
-def cmppage(cmpid):
-  print(request.form)
-  if request.method == "GET":
-    conn = get_db_connection()
-    cur = conn.cursor()
-    if cmpid.isnumeric():
-      cmpid = int(cmpid)
-    else:
-      print("Invalid companyid")
-    cur.execute("SELECT * FROM job_details WHERE company_id = %(c)s", {"c": cmpid})
-    jobs = cur.fetchall()
-    print(jobs)
 
-    return render_template('companyPage.html', jobs = jobs)
-  
-  if request.method == "POST":
-    print("==========================")
-    print("Handling POST request")
-    print("==========================")
-    # TODO Needs to be changed
-    return redirect('/user/0')
 
 if __name__ == '__main__':
   app.run(debug=True)
