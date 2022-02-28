@@ -18,7 +18,7 @@ class UserDetails:
 
 
 class JobDetail:
-  def __init__(self, job_id, company, job_title, description, job_type, prerequisites, skills, pay_rate, no_positions, experience_required, location, contact, email, status = "APPLICATION IN PROCESS"):
+  def __init__(self, job_id, company, job_title, description, job_type, prerequisites, skills, pay_rate, no_positions, experience_required, location, contact, email, status = "APPLICATION IN PROCESS", job_status = "OPEN"):
     self.job_id = job_id
     self.company = company
     self.job_title = job_title
@@ -33,6 +33,7 @@ class JobDetail:
     self.contact = contact
     self.email = email
     self.status = status
+    self.job_status = job_status
 
 
 class companyDetails:

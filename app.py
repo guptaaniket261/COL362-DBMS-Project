@@ -152,6 +152,9 @@ def userpage(userid, offset):
 
     cur.execute("SELECT distinct(location) FROM company_details")
     locations = cur.fetchall()
+    #sort locations by alphabetical order
+    locations.sort(key=lambda x: x[0])
+
 
     cur.execute("SELECT distinct(company_name) FROM company_details")
     companies = cur.fetchall()
@@ -271,7 +274,7 @@ def profile(userid):
   conn = get_db_connection()
   cur = conn.cursor()
   if request.method == "POST":
-    if request.form['key'] == 1:
+    if int(request.form['key']) == 1:
       fname = request.form['fname']
       lname = request.form['lname']
       age = request.form['age']
@@ -336,7 +339,7 @@ def jobs_applied(userid):
                     title, description, job_type, prerequisites, skills, 
                     pay_rate, no_positions, experience_required , location, 
                     contact, email, applications.status
-                    FROM (select * from job_details where status = '1') as jobs
+                    FROM job_details as jobs
                     join company_details on
                     company_details.company_id = jobs.company_id 
                     join applications on
@@ -369,8 +372,9 @@ def cmppage(cmpid):
     cur.execute("SELECT * FROM job_details WHERE company_id = %(c)s", {"c": cmpid})
     jobs = cur.fetchall()
     job_details = []
+    status_map = {'1': "OPEN", '0': "CLOSED"}
     for job in jobs:
-      job_details.append(JobDetail(job[0], company[1], job[2], job[3], job[4], job[5], job[6], job[7], job[8], job[9], company[2], company[7], company[8]))
+      job_details.append(JobDetail(job[0], company[1], job[2], job[3], job[4], job[5], job[6], job[7], job[8], job[9], company[2], company[7], company[8], job_status=status_map[job[10]]))
     return render_template('companyPage.html', jobs = job_details, company_detail = company_detail)
   
   if request.method == "POST":
@@ -379,6 +383,35 @@ def cmppage(cmpid):
     print("==========================")
     # TODO Needs to be changed
     return redirect('/user/0')
+
+
+@app.route('/delete_job_<int:cmpid>/<int:jobid>')
+def delete_job(cmpid, jobid):
+  if not session.get('companyid'):
+    return redirect('/login')
+  if int(session.get('companyid')) != int(cmpid):
+    return redirect('/login')
+  conn = get_db_connection()
+  cur = conn.cursor()
+  cur.execute("DELETE FROM job_details WHERE job_id = %(o)s", {"o": jobid})
+  conn.commit()
+  return redirect('/company_' + str(cmpid))
+
+@app.route('/update_job_status_<int:cmpid>_<int:jobid>_<int:newstatus>')
+def update_job_status(cmpid, jobid, newstatus):
+  if not session.get('companyid'):
+    return redirect('/login')
+  if int(session.get('companyid')) != int(cmpid):
+    return redirect('/login')
+  conn = get_db_connection()
+  cur = conn.cursor()
+  if newstatus == 0:
+    cur.execute("UPDATE job_details SET status = '0' WHERE job_id = %(o2)s", {"o2": jobid})
+  else:
+    cur.execute("UPDATE job_details SET status = '1' WHERE job_id = %(o2)s", {"o2": jobid})
+  conn.commit()
+  return redirect('/company_' + str(cmpid))
+
 
 
 @app.route('/company_profile')

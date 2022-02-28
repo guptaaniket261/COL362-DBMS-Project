@@ -47,38 +47,57 @@
           </nav>
     </section>
 
-    <h3> {{company_detail.company_name}} </h3>
+    <div class="card" style="float:left; margin-right: 4%; width:25%">
+      <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+      <div class="card-body">
+        <h3 class="card-title">{{company_detail.company_name}}</h3>
+        <p></p>
+        <img src="https://cdn.pixabay.com/photo/2016/04/10/21/53/distorted-1320866_960_720.png" class="img-fluid rounded-start" alt="...">
+        <p></p>
+        <h5> Location: {{company_detail.location}}</h5>
+        <h5> Department: {{company_detail.department}}</h5>
+        <h5> Rating: {{company_detail.rating}} stars</h5>
+        <h5> Awards: {{company_detail.awards}}</h5>
+        <h5> About Us: {{company_detail.about_us}}</h5>
+        <h5> Contact: {{company_detail.contact}}</h5>
+        <h5> Email: {{company_detail.email}}</h5>
+        <h5> Website: {{company_detail.website}}</h5>
+      </div>
+    </div>
 
 
 
-    <h3 style="margin-left:40%;">Jobs you posted</h3>
- 
+   
     <div class="container" style="margin-left: 10%;">
+      <h3>Jobs you Posted</h3>
       {% for job in jobs %}
         <div class="card mb-3" style="max-width: 1000px;">
           <div class="row g-0">
-            <div class="col-md-4">
-              <img src="https://cdn.pixabay.com/photo/2016/04/10/21/53/distorted-1320866_960_720.png" class="img-fluid rounded-start" alt="...">
-            </div>
             <div class="col-md-8">
               <div class="card-body">
                 <h5 class="card-title">{{ job.job_title }}</h5>
-                <div class="btn-group btn-group-toggle" data-toggle="buttons" method="post" action="">
-                  <label class="btn btn-secondary active">
-                    <input type="radio" name="options" value="0" id="option1" autocomplete="off" checked> Open
-                  </label>
-                  <label class="btn btn-secondary">
-                    <input type="radio" name="options" value="1" id="option2" autocomplete="off"> Closed
-                  </label>
-                </div>
-                
-                <p class="card-text"><small class="text-muted">{{ job.company }}</small></p>
+                <p class="card-text">{{ job.company }}</p>
                 <p class="fa fa-map-marker" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job.location }}</small></p>
                 <p class="fa fa-pencil" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job.experience_required }}</small></p>
                 <p class="fa fa-money" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job.pay_rate }}</small></p>
                 <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job.prerequisites }}</small></p>
-                <a href="/applications/{{ job[0] }}" class="btn btn-primary">See applicants</a>
-                <a href="#" class="btn btn-primary">Delete job listing</a>
+                <h4>Job Description</h4>
+                <p class="card-text">{{job.description}}</p>
+                {% if job.job_status == "OPEN" %}
+                  <h4>Status: Open</h4>
+                {% else %}
+                  <h4>Status: Closed</h4>
+                {% endif %}
+                <br>
+                <a href="/applications/{{ job.job_id }}" class="btn btn-primary">See applicants</a>
+                <a href="/delete_job_{{company_detail.company_id}}/{{job.job_id}}" class="btn btn-primary">Delete job listing</a>
+                {% if job.job_status == "OPEN" %}
+                  <a href="/update_job_status_{{company_detail.company_id}}_{{job.job_id}}_{{0}}" class="btn btn-primary">Close applications for this job</a>
+                {% else %}                
+                  <a href="/update_job_status_{{company_detail.company_id}}_{{job.job_id}}_{{1}}" class="btn btn-primary">Open applications for this job</a>
+                {% endif %}
+                <br>
+
               </div>
             </div>
           </div>
