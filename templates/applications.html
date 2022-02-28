@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>corepage</title>
+    <title>Job Applications</title>
     <meta charset="utf-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1">  
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
@@ -17,31 +17,30 @@
 </head>
 <body style="margin-left: 30mm; margin-right: 30mm; margin-bottom: 30mm;">
     <section id = "nav-bar">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Grabajob</a>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                  <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">User Profile</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">About US</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Post a job</a>
-                </li>
-              </ul>
-              
-
-              <form class="d-flex" method="POST">
-                <input class="form-control me-2" placeholder="Search" aria-label="Search" name="tag" >
-                <button class="btn btn-outline-success" type="submit">Search</button>
-              </form>
-            </div>
-          </nav>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="navbar-brand" href="#">Grabajob</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="/company_{{cmpid}}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/company_profile_{{cmpid}}">Company Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/postjob_{{cmpid}}">Post a job</a>
+            </li>
+          </ul>
+          
+          <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
     </section>
     <h3 style="margin-left:130mm;">Applicants for this job</h3>
     

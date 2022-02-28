@@ -143,7 +143,8 @@ def userpage(userid, offset):
                   pay_rate, no_positions, experience_required 
                   FROM (select * from job_details where status = '1' limit 10 offset %(o)s) as jobs
                   join company_details on
-                  company_details.company_id = jobs.company_id""", {"o": start})    
+                  company_details.company_id = jobs.company_id and
+                  job_id not in (select job_id from applications where user_id=%(u)s)""", {"o": start, "u": userid})  
     
     jobs = cur.fetchall()
 
@@ -260,6 +261,7 @@ def applications(cmpid, jobid):
     return redirect('/login')
   if int(session.get('companyid')) != int(cmpid):
     return redirect('/login')
+    
   conn = get_db_connection()
   cur = conn.cursor()
   
