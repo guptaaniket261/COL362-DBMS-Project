@@ -69,9 +69,18 @@ CREATE TABLE IF NOT EXISTS login_details(
 );
 
 
-\copy company_details from 'company_details_latest.csv' DELIMITER ',' CSV HEADER;
+\copy company_details from 'company_details.csv' DELIMITER ',' CSV HEADER;
 \copy job_details from 'job_details.csv' DELIMITER ',' CSV HEADER;
-\copy user_details from 'userDetailsLatest.csv' DELIMITER ',' CSV HEADER;
-\copy experiences from 'experiencesNew.csv' DELIMITER ',' CSV HEADER;
-\copy login_details from 'login_details.csv' DELIMITER ',' NULL AS 'null' CSV HEADER ;
+\copy user_details from 'userDetails.csv' DELIMITER ',' CSV HEADER;
+\copy experiences from 'experiences.csv' DELIMITER ',' CSV HEADER;
+\copy login_details from 'login_details.csv' DELIMITER ',' NULL AS '' CSV HEADER ;
+\copy applications from 'applications.csv' DELIMITER ',' CSV HEADER;
+
+-- \copy company_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\company_details.csv' DELIMITER ',' CSV HEADER;
+-- \copy job_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\job_details.csv' DELIMITER ',' CSV HEADER;
+-- \copy user_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\userDetails.csv' DELIMITER ',' CSV HEADER;
+-- \copy experiences from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\experiences.csv' DELIMITER ',' CSV HEADER;
+-- \copy login_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\login_details.csv' DELIMITER ',' NULL AS '' CSV HEADER ;
+-- \copy applications from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\applications.csv' DELIMITER ',' CSV HEADER;
+
 
