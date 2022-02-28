@@ -241,7 +241,12 @@ def applyForJob(userid, jobid):
     job = cur.fetchone()
     if job is None:
       cur.execute("select max(application_id) from applications")
-      application_id = cur.fetchone()[0] + 1
+      application_id = cur.fetchone()[0]
+      print(application_id)
+      print(type(application_id))
+      if application_id == None:
+        application_id = 0
+      application_id += 1
       cur.execute("insert into applications values(%(a)s, %(j)s, %(u)s, 0)", {'a': application_id, 'u': userid, 'j': jobid})
       conn.commit()
     return redirect('/user_{0}/0'.format(userid))

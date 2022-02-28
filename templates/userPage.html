@@ -73,7 +73,16 @@
               <p class="fa fa-suitcase" style = "margin-right: 50mm;"><small class="text-muted" style="margin-left: 2mm;">{{ job[10] }}</small></p>
               <br>
               <a href="/job_details_{{user.user_id}}/{{job[0]}}" class="btn btn-primary" style="margin-right:3%;">See Details</a>
-              <a href="/job_apply_{{user.user_id}}/{{job[0]}}" class="btn btn-primary">Apply</a>
+              <p id="hidden_data" style="display: none;">{{ job[0] }}</p>
+              <!-- <button class="btn btn-primary" id="apply_btn" >Apply</button> -->
+              <a href="/job_apply_{{user.user_id}}/{{job[0]}}" class="btn btn-primary"  onClick="(function(){
+                alert('Applied successfully');
+                this.innerHTML = 'Applied';
+                this.addClass('btn-success');
+                this.removeClass('btn-primary');
+                return false;})();
+                return false;">Apply</a>
+              <!-- <a href="/job_apply_{{user.user_id}}/{{job[0]}}" class="btn btn-primary" id="apply_btn" >Apply</a> -->
             </div>
           </div>
         </div>
@@ -164,4 +173,29 @@
 
 
 </body>
+<script>
+
+      document.getElementById('apply_btn').addEventListener('click', function(event) {
+        var data = "/job_apply_{{user.user_id}}/"  + document.getElementById("hidden_data").innerHTML;
+        console.log(data);
+        window.location.href = data;
+        if(document.getElementById('apply_btn').hasClass('btn-primary')){
+          document.getElementById('apply_btn').removeClass('btn-primary');
+          document.getElementById('apply_btn').addClass('btn-success');
+        }
+
+      });
+
+
+      // document.getElementById('apply_btn').addEventListener('click', some_func.bind(null, variable), false);
+      
+      // function some_func(variable, event) {
+      //   window.location.href = variable;
+      //   if(document.getElementById('apply_btn').hasClass('btn-primary')){
+      //     document.getElementById('apply_btn').removeClass('btn-primary');
+      //     document.getElementById('apply_btn').addClass('btn-success');
+      //   }
+      // };
+
+</script>
 </html>
