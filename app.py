@@ -22,7 +22,8 @@ def get_db_connection():
       host = credentials['host'],
       database = credentials['database'],
       user = credentials['user'],
-      password = credentials['password']
+      password = credentials['password'],
+      port = credentials['port']
     )
     return conn
 
@@ -261,7 +262,7 @@ def applications(cmpid, jobid):
     return redirect('/login')
   if int(session.get('companyid')) != int(cmpid):
     return redirect('/login')
-    
+
   conn = get_db_connection()
   cur = conn.cursor()
   
