@@ -1,6 +1,5 @@
-{% extends "base.html" %} {% block title %}Search{% endblock %} {% block
-    content %}
-  
+{% extends "base.html" %} {% block title %}Login Page{% endblock %} 
+{% block content %}
   <style>
     .custom-form{
         border-radius: 10px;
@@ -8,7 +7,7 @@
         width:30%;
         margin: 30px auto;
         alignment:center;
-        background:#ecf0f1;
+        background-color: rgb(224, 221, 216);
         padding: 5px;
     }
     .customform{
@@ -34,7 +33,7 @@
     }
     .btn-default{
         background-color: #2e8dcc;
-        color: white;
+        color: rgb(192, 22, 73);
         alignment: center;
         text-align: center;
     }
@@ -42,7 +41,7 @@
   <div class = "custom-form">
     <form class="customform" method="post" action="">
       <h1 class="formtitle">Login</h1><br/>
-      <h3 class="formtitle"> Welcome to grabajob</h3>
+      <h2 class="formtitle"> Welcome to GrabAJob</h2>
       <div class="form-group">
           <label for="email">Email ID</label>
           <input type="email" class="form-control" name="email" id="email" placeholder="Email">
@@ -55,4 +54,4 @@
       <a class="btn btn-default" href="/user_register" style="align: center;">First time? Sign Up..</a>
   </form>
   </div>
-  {% endblock %}
+{% endblock %}

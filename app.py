@@ -1,10 +1,12 @@
 from math import exp
-import os
+import os, random
 import psycopg2
 from flask import Blueprint, Flask, render_template, redirect, request, flash, session
 from config import credentials
 from models import *
 from flask_session import Session
+
+img_map = {1:"1.jpeg", 2:"2.jpeg", 3:"3.jpg", 4:"4.png", 5:"5.jpg", 6:"company.png"}
 
 
 app = Flask(__name__)
@@ -45,7 +47,7 @@ def login():
     
     user = cur.fetchone()
     if not user:
-      flash("Invalid email or password")
+      flash("Invalid email or password", category='error')
       return redirect('/login')
 
 
@@ -82,8 +84,8 @@ def user_register():
     cur.execute("SELECT * FROM login_details WHERE login_id = '{0}'".format(email))
     user = cur.fetchone()
     if user:
-      print("User already exists")
-      # flash('User already exists',category='error')
+      # print("User already exists")
+      flash('Email id already registered',category='error')
       return redirect('/user_register')
     else:
       if user_type == "applicant":
@@ -106,21 +108,15 @@ def user_register():
 
 @app.route('/user_<int:userid>', methods=['POST', 'GET'])
 def user(userid):
-  # print(userid, session['username'])
   if not session.get('userid'):
     return redirect('/login')
   if session.get('userid') != userid:
-    return redirect('/login')
-  # print(type(session.get('userid')), type(userid))
-  
+    return redirect('/login')  
   return redirect('/user_{0}/0'.format(userid))
 
 
 @app.route('/user_<int:userid>/<offset>', methods=["GET", "POST"])
 def userpage(userid, offset):
-  # print("==========================")
-  # print(USER_DETAILS.firstname)
-  # print("==========================")
   if not session.get('userid'):
     return redirect('/login')
   if session.get('userid') != userid:
@@ -130,8 +126,6 @@ def userpage(userid, offset):
   cur.execute("select * from user_details where user_id = %(o)s", {'o': userid})
   user = cur.fetchone()
   userDetail = UserDetails(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10])
-
-  print(request.form)
   if offset.isnumeric():
     pg = int(float(offset))
     start = int(float(offset))*10
@@ -148,9 +142,9 @@ def userpage(userid, offset):
                   job_id not in (select job_id from applications where user_id=%(u)s)""", {"o": start, "u": userid})  
     
     jobs = cur.fetchall()
-
     cur.execute("""select count(*) from job_details where status = '1'""")
     total_jobs = cur.fetchone()[0]
+    imgs = [img_map[random.randint(1,6)] for i in range(len(jobs))]
 
     cur.execute("SELECT distinct(location) FROM company_details")
     locations = cur.fetchall()
@@ -171,7 +165,7 @@ def userpage(userid, offset):
       if i >= 0 and i<mxPg:
         pgs.append(i)
 
-    return render_template('userPage.html', jobs = jobs, pgs = pgs, curr_pg = pg, locations = locations, companies = companies, categories = categories, user = userDetail)
+    return render_template('userPage.html', imgs=imgs, jobs = jobs, pgs = pgs, curr_pg = pg, locations = locations, companies = companies, categories = categories, user = userDetail)
   
 
   if request.method == "POST":
@@ -284,6 +278,14 @@ def applications(cmpid, jobid):
   return render_template('applications.html', applicants=applicants, experiences=experiences, cmpid=cmpid, jobid = jobid)
 
 
+def check_contact(contact):
+  if len(contact) != 10:
+    return False
+  for c in contact:
+    if c < '0' or c > '9':
+      return False
+  return True
+
 @app.route('/user_profile_<int:userid>',methods=['POST', 'GET'])
 def user_profile(userid):
   if not session.get('userid'):
@@ -305,11 +307,18 @@ def user_profile(userid):
       eth = request.form['eth']
       address = request.form['address']
       mobile = request.form['mobile']
-      # email = request.form['email']
       education = request.form['education']
-      # country = request.form['country']
       state = request.form['state']
+      if(not check_contact(mobile)):
+        flash("Invalid contact number")
+        cur.execute("select * from experiences where user_id = %(userid)s", {'userid': userid})
+        experiences = cur.fetchall()
+        cur.execute("select * from user_details where user_id = %(userid)s", {'userid': userid})
+        userDetail = cur.fetchone()
+        user_detail = UserDetails(userDetail[0], userDetail[1], userDetail[2], userDetail[3], userDetail[4], userDetail[5], userDetail[6], userDetail[7], userDetail[8], userDetail[9], userDetail[10])
+        return render_template('user_profile.html', user_detail=user_detail, experiences=experiences)
         
+
       cur.execute("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid':userid,  'fname': str(fname), 'lname': str(lname),'age': age, 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'mobile': str(mobile), 'education': str(education)})
       conn.commit()
       # print("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, email = %(email)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid': str(user_id[0]), 'fname': str(fname), 'lname': str(lname),'age': str(age), 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'email': str(email), 'mobile': str(mobile), 'education': str(education)})
@@ -352,18 +361,21 @@ def company_profile(cmpid):
       location = request.form['location']
       awds = request.form['awds']
       contact = request.form['contact']
-      # email = request.form['email']
       website = request.form['website']
+      if(not check_contact(contact)):
+        flash("Invalid contact number")
+        cur.execute("select * from company_details where company_id = %(compid)s", {'compid': cmpid})
+        compDetail = cur.fetchone()
+        company_detail = companyDetails(compDetail[0], compDetail[1], compDetail[2], compDetail[3], compDetail[4], compDetail[5], compDetail[6], compDetail[7], compDetail[8], compDetail[9])
+        return render_template('company_profile_new.html', company_detail=company_detail)
         
       cur.execute("UPDATE company_details SET company_name = %(cname)s, about_us = %(abt)s, department = %(dep)s, location = %(loc)s, awards = %(awd)s, contact = %(cont)s, website = %(webs)s WHERE company_id = %(compid)s", {'compid':cmpid,  'cname': str(cname), 'abt': str(about),'dep': str(depts), 'loc': str(location), 'awd': str(awds),'cont': str(contact), 'webs': str(website)})
       conn.commit()
-      # print("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, email = %(email)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid': str(user_id[0]), 'fname': str(fname), 'lname': str(lname),'age': str(age), 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'email': str(email), 'mobile': str(mobile), 'education': str(education)})
       flash("Company profile updated successfully.", category = 'success')
 
 
   cur.execute("select * from company_details where company_id = %(compid)s", {'compid': cmpid})
   compDetail = cur.fetchone()
-  print(compDetail)
   company_detail = companyDetails(compDetail[0], compDetail[1], compDetail[2], compDetail[3], compDetail[4], compDetail[5], compDetail[6], compDetail[7], compDetail[8], compDetail[9])
   return render_template('company_profile_new.html', company_detail=company_detail)
   
@@ -497,12 +509,15 @@ def createjob(cmpid):
     return redirect('/login')
   if int(session.get('companyid')) != int(cmpid):
     return redirect('/login')
-  print(request.form)
+  conn = get_db_connection()
+  cur = conn.cursor()
+  cur.execute("select company_name, email from company_details where company_id = %(o)s", {"o": cmpid})
+  company = cur.fetchone()
+  cmp_name = company[0]
+  cmp_email = company[1]
   if request.method == "GET":
-    return render_template('postjob.html', companyid=cmpid)
+    return render_template('postjob.html', companyid=cmpid, cmp_name=cmp_name, cmp_email=cmp_email)
   if request.method == "POST":
-    conn = get_db_connection()
-    cur = conn.cursor()
     cur.execute("select max(job_id) from job_details")
     job_id = cur.fetchone()[0]+1
     company_id = cmpid
@@ -518,7 +533,7 @@ def createjob(cmpid):
     cur.execute("INSERT INTO job_details (job_id, company_id, title, description, job_type, prerequisites, skills, pay_rate, no_positions, experience_required, status) VALUES (%(o1)s, %(o2)s, %(o3)s, %(o4)s, %(o5)s, %(o6)s, %(o7)s, %(o8)s, %(o9)s, %(o10)s, '1')", {"o1": job_id, "o2": company_id, "o3": title, "o4": description, "o5": job_type, "o6": prerequisites, "o7": skills, "o8": pay_rate, "o9": no_positions, "o10": experience_required})
     conn.commit()
     return redirect('/company_' + str(cmpid))
-  return render_template('postJob.html')
+  return render_template('postJob.html', companyid=cmpid, cmp_name=cmp_name, cmp_email=cmp_email)
 
 
 

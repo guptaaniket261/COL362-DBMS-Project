@@ -15,36 +15,33 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css" integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body style="margin-left: 30mm; margin-right: 30mm; margin-bottom: 30mm;">
+<body style="margin-left: 30mm; margin-right: 30mm; margin-bottom: 30mm; background-color: rgb(238, 226, 210);">
     <section id = "nav-bar">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="navbar-brand" href="#">Grabajob</a>
+              <a class="navbar-brand" href="#"><b>GrabAJob</b></a>
             </li>
             <li class="nav-item active">
-              <a class="nav-link" href="/company_{{cmpid}}">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="/company_{{cmpid}}"><b>Home</b><span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/company_profile_{{cmpid}}">Company Profile</a>
+              <a class="nav-link" href="/company_profile_{{cmpid}}"><b>Company Profile</b></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/postjob_{{cmpid}}">Post a job</a>
+                <a class="nav-link" href="/postjob_{{cmpid}}"><b>Post a job</b></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout"><b>Logout</b></a>
             </li>
           </ul>
-          
-          <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
         </div>
       </nav>
     </section>
-    <h3 style="margin-left:130mm;">Applicants for this job</h3>
+    <h3 style="margin-left:35%;">Applicants for this job</h3>
     
-    <div class="container" style="margin-left: 130mm;">
+    <div class="container" style="margin-left: 10%; ">
     {% for applicant in applicants %}
       <div class="card mb-3" style="max-width: 1000px;">
         <div class="row g-0">

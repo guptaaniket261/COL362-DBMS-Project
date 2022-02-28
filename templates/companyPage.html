@@ -16,30 +16,27 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
-<body style="margin-left: 30mm; margin-right: 30mm;">
+<body style="margin-left: 30mm; margin-right: 30mm; background-color: rgb(238, 226, 210);">
     <section id = "nav-bar">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                  <a class="navbar-brand" href="#">Grabajob</a>
+                  <a class="navbar-brand" href="#"><b>GrabAJob</b></a>
                 </li>
                 <li class="nav-item active">
-                  <a class="nav-link" href="/company_{{company_detail.company_id}}">Home <span class="sr-only">(current)</span></a>
+                  <a class="nav-link" href="/company_{{company_detail.company_id}}"><b>Home</b><span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="/company_profile_{{company_detail.company_id}}">Company Profile</a>
+                  <a class="nav-link" href="/company_profile_{{company_detail.company_id}}"><b>Company Profile</b></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/postjob_{{company_detail.company_id}}">Post a job</a>
+                    <a class="nav-link" href="/postjob_{{company_detail.company_id}}"><b>Post a job</b></a>
                 </li>
-              </ul>
-              
-              <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-              </form>
+                <li class="nav-item">
+                  <a class="nav-link" href="/logout"><b>Logout</b></a>
+                </li>
+              </ul>    
             </div>
           </nav>
     </section>
@@ -51,24 +48,24 @@
         <p></p>
         <img src="https://cdn.pixabay.com/photo/2016/04/10/21/53/distorted-1320866_960_720.png" class="img-fluid rounded-start" alt="...">
         <p></p>
-        <h5> Location: {{company_detail.location}}</h5>
-        <h5> Department: {{company_detail.department}}</h5>
-        <h5> Rating: {{company_detail.rating}} stars</h5>
-        <h5> Awards: {{company_detail.awards}}</h5>
-        <h5> About Us: {{company_detail.about_us}}</h5>
-        <h5> Contact: {{company_detail.contact}}</h5>
-        <h5> Email: {{company_detail.email}}</h5>
-        <h5> Website: {{company_detail.website}}</h5>
+        <p> Location: {{company_detail.location}}</p>
+        <p> Department: {{company_detail.department}}</p>
+        <p> Rating: {{company_detail.rating}} stars</p>
+        <p> Awards: {{company_detail.awards}}</p>
+        <p> About Us: {{company_detail.about_us}}</p>
+        <p> Contact: {{company_detail.contact}}</p>
+        <p> Email: {{company_detail.email}}</p>
+        <p> Website: {{company_detail.website}}</p>
       </div>
     </div>
 
 
 
    
-    <div class="container" style="margin-left: 10%;">
-      <h3>Jobs you Posted</h3>
+    <div class="container" style="margin-left: 3%;">
+      <h3 style="margin-left: 54%;">Jobs you Posted</h3>
       {% for job in jobs %}
-        <div class="card mb-3" style="max-width: 70%; float:right; margin-right: 10%;">
+        <div class="card mb-3" style="max-width: 65%; float:right; margin-right: 3%;">
           <div class="row g-0">
             <div class="col-md-8">
               <div class="card-body">
@@ -90,13 +87,13 @@
                 <br>
                 <a href="/applications_{{company_detail.company_id}}_{{ job.job_id }}" class="btn btn-primary">See applicants</a>
                 <a href="/delete_job_{{company_detail.company_id}}/{{job.job_id}}" class="btn btn-primary">Delete job listing</a>
+                <p></p>
                 {% if job.job_status == "OPEN" %}
                   <a href="/update_job_status_{{company_detail.company_id}}_{{job.job_id}}_{{0}}" class="btn btn-primary">Close applications for this job</a>
                 {% else %}                
                   <a href="/update_job_status_{{company_detail.company_id}}_{{job.job_id}}_{{1}}" class="btn btn-primary">Open applications for this job</a>
                 {% endif %}
                 <br>
-
               </div>
             </div>
           </div>
