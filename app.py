@@ -1,4 +1,3 @@
-from crypt import methods
 from math import exp
 import os
 import psycopg2
@@ -343,9 +342,7 @@ def company_profile(cmpid):
   conn = get_db_connection()
   cur = conn.cursor()
   if request.method == "POST":
-    print('request key')
-    print(request.form['key'])
-    if request.form['key'] == 1:
+    if int(request.form['key']) == 1:
       cname = request.form['cname']
       about = request.form['about']
       depts = request.form['depts']
@@ -491,9 +488,33 @@ def update_appl_status(cmpid, jobid, appid, newstatus):
 def getcompany_profile():
   return render_template('company_profile.html')
 
+@app.route('/postjob_<int:cmpid>', methods=["GET", "POST"])
+def createjob(cmpid):
+  if not session.get('companyid'):
+    return redirect('/login')
+  if int(session.get('companyid')) != int(cmpid):
+    return redirect('/login')
+  print(request.form)
+  if request.method == "GET":
+    return render_template('postjob.html', companyid=cmpid)
+  if request.method == "POST":
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("select max(job_id) from job_details")
+    job_id = cur.fetchone()[0]+1
+    company_id = cmpid
+    title = request.form['title']
+    description = request.form['description']
+    job_type = request.form['job_type']
+    prerequisites = request.form['prerequisites']
+    skills = request.form['skills']
+    pay_rate = request.form['pay_rate']
+    no_positions = request.form['no_positions']
+    experience_required = request.form['experience_required']
 
-@app.route('/postjob')
-def createjob():
+    cur.execute("INSERT INTO job_details (job_id, company_id, title, description, job_type, prerequisites, skills, pay_rate, no_positions, experience_required, status) VALUES (%(o1)s, %(o2)s, %(o3)s, %(o4)s, %(o5)s, %(o6)s, %(o7)s, %(o8)s, %(o9)s, %(o10)s, '1')", {"o1": job_id, "o2": company_id, "o3": title, "o4": description, "o5": job_type, "o6": prerequisites, "o7": skills, "o8": pay_rate, "o9": no_positions, "o10": experience_required})
+    conn.commit()
+    return redirect('/company_' + str(cmpid))
   return render_template('postJob.html')
 
 
