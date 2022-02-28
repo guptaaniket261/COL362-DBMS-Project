@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 import os
 import psycopg2
 from flask import Blueprint, Flask, render_template, redirect, request, flash, session
@@ -34,12 +33,14 @@ def index():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
+  print(request.method)
   if request.method == "POST":
     email = request.form['email']
     password = request.form['password']
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM login_details WHERE login_id = %s AND password = %s", (email, password))
+    cur.execute("SELECT user_id FROM login_details WHERE login_id = %s AND password = %s", (email, password))
+    
     user = cur.fetchone()
     if not user:
       flash("Invalid email or password")
@@ -254,6 +255,35 @@ def applications(jobid):
   applicants = cur.fetchall()
 
   return render_template('applications.html', applicants=applicants)
+
+
+@app.route('/user_profile',methods=['POST', 'GET'])
+def profile():
+    if request.method == "POST":
+      fname = request.form['fname']
+      lname = request.form['lname']
+      age = request.form['age']
+      gender = request.form['gender']
+      eth = request.form['eth']
+      address = request.form['address']
+      mobile = request.form['mobile']
+      email = request.form['email']
+      education = request.form['education']
+      country = request.form['country']
+      state = request.form['state']
+      print(fname)
+      conn = get_db_connection()
+      cur = conn.cursor()
+      cur.execute("select user_id from user_details where email = %(email)s", {'email': str(email)})
+      user_id = cur.fetchone()
+      if user_id:
+        print(user_id)
+        cur.execute("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, email = %(email)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid': str(user_id[0]), 'fname': str(fname), 'lname': str(lname),'age': str(age), 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'email': str(email), 'mobile': str(mobile), 'education': str(education)})
+        conn.commit()
+        print("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, email = %(email)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid': str(user_id[0]), 'fname': str(fname), 'lname': str(lname),'age': str(age), 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'email': str(email), 'mobile': str(mobile), 'education': str(education)})
+        flash("User profile updated successfully.")
+
+    return render_template('user_profile.html')
 
 
 @app.route('/job_details_<int:userid>/<int:jobid>')
