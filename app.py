@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 import os
 import psycopg2
 from flask import Blueprint, Flask, render_template, redirect, request, flash
