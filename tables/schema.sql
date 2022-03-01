@@ -11,6 +11,16 @@ CREATE table IF NOT EXISTS company_details(
     website text
 ); 
 
+CREATE INDEX company_index ON company_details
+(
+    company_name ASC
+);
+
+CREATE INDEX location_index ON company_details
+(
+    location ASC
+);
+
 CREATE table IF NOT EXISTS job_details(
     job_id SERIAL PRIMARY KEY,
     company_id bigint REFERENCES company_details(company_id),
@@ -25,6 +35,15 @@ CREATE table IF NOT EXISTS job_details(
     status bit
 ); 
 
+CREATE INDEX job_skills ON job_details
+(
+    skills ASC
+);
+
+CREATE INDEX job_index ON job_details
+(
+    title ASC
+);
 
 CREATE TABLE IF NOT EXISTS user_details(
     user_id SERIAL PRIMARY KEY,
@@ -50,12 +69,22 @@ CREATE TABLE IF NOT EXISTS experiences(
     user_id bigint REFERENCES user_details(user_id)
 );
 
+CREATE INDEX experience_index ON experiences
+(
+    user_id ASC
+);
+
 
 CREATE TABLE IF NOT EXISTS applications(
     application_id SERIAL PRIMARY KEY,
-    job_id bigint REFERENCES job_details(job_id),
+    job_id bigint REFERENCES job_details(job_id) on delete cascade,
     user_id bigint REFERENCES user_details(user_id),
     status smallint
+);
+
+CREATE INDEX application_index ON applications
+(
+    job_id ASC
 );
 
 
@@ -69,18 +98,18 @@ CREATE TABLE IF NOT EXISTS login_details(
 );
 
 
-\copy company_details from 'tables/company_details.csv' DELIMITER ',' CSV HEADER;
-\copy job_details from 'tables/job_details.csv' DELIMITER ',' CSV HEADER;
-\copy user_details from 'tables/userDetails.csv' DELIMITER ',' CSV HEADER;
-\copy experiences from 'tables/experiences.csv' DELIMITER ',' CSV HEADER;
-\copy login_details from 'tables/login_details.csv' DELIMITER ',' NULL AS '' CSV HEADER ;
-\copy applications from 'tables/applications.csv' DELIMITER ',' CSV HEADER;
+-- \copy company_details from 'tables/company_details.csv' DELIMITER ',' CSV HEADER;
+-- \copy job_details from 'tables/job_details.csv' DELIMITER ',' CSV HEADER;
+-- \copy user_details from 'tables/userDetails.csv' DELIMITER ',' CSV HEADER;
+-- \copy experiences from 'tables/experiences.csv' DELIMITER ',' CSV HEADER;
+-- \copy login_details from 'tables/login_details.csv' DELIMITER ',' NULL AS '' CSV HEADER ;
+-- \copy applications from 'tables/applications.csv' DELIMITER ',' CSV HEADER;
 
--- \copy company_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\company_details.csv' DELIMITER ',' CSV HEADER;
--- \copy job_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\job_details.csv' DELIMITER ',' CSV HEADER;
--- \copy user_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\userDetails.csv' DELIMITER ',' CSV HEADER;
--- \copy experiences from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\experiences.csv' DELIMITER ',' CSV HEADER;
--- \copy login_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\login_details.csv' DELIMITER ',' NULL AS '' CSV HEADER ;
--- \copy applications from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\applications.csv' DELIMITER ',' CSV HEADER;
+\copy company_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\company_details.csv' DELIMITER ',' CSV HEADER;
+\copy job_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\job_details.csv' DELIMITER ',' CSV HEADER;
+\copy user_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\userDetails.csv' DELIMITER ',' CSV HEADER;
+\copy experiences from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\experiences.csv' DELIMITER ',' CSV HEADER;
+\copy login_details from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\login_details.csv' DELIMITER ',' NULL AS '' CSV HEADER ;
+\copy applications from 'C:\\Users\\gupta\\Sem6\\COL362_DBMS\\project\\COL362-DBMS-Project\\tables\\applications.csv' DELIMITER ',' CSV HEADER;
 
 
