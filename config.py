@@ -3,5 +3,5 @@ credentials = {
   'port' : "5432",
   'database' : "group_20",
   'user' : "postgres",
-  'password' : "130902"
+  'password' : "postgres"
 }
