@@ -1,0 +1,49 @@
+{% extends "base.html" %} {% block title %}Profile{% endblock %} {% block content %}
+
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="d-flex justify-content-between align-items-center mb-3" style="margin-bottom: 25px;">
+            <h3 class="text-center">Post a New Job</h3>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-4 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://cdn.pixabay.com/photo/2016/04/10/21/53/distorted-1320866_960_720.png"><div class="font-weight-bold">{{cmp_name}}</div><span class="text-black-50">{{cmp_email}}</span><span> </span></div>
+        </div>
+        <div class="col-md-4 border-right">
+            <div class="p-3 py-5">
+                <form class="customform" method="post" action="">  
+
+                <div class="row mt-3">
+
+                    <div class="col-md-12"><label class="labels">Job title</label><input type="text" name="title" class="form-control" placeholder="enter job title" value=""></div>
+                    <div class="col-md-12"><label class="labels">Job description</label><input type="text" name="description" class="form-control" value="" placeholder="enter job description"></div>
+                    <div class="col-md-12"><label class="labels">Prerequisites</label><input type="text" name="prerequisites" class="form-control" placeholder="enter prerequisites" value=""></div>
+                    <div class="col-md-12"><label class="labels">Skills</label><input type="text" name="skills" class="form-control" placeholder="enter skills required" value=""></div>
+                    <div class="col-md-12">
+                        <label for="job-type">Job Type</label>
+                        <select class="form-control" id="job-type" name="job_type">
+                          <option value="--">--</option>
+                          <option value="full-time">Full Time</option>
+                          <option value="part-time">Part Time</option>
+                          <option value="internship">Internship</option>
+                          <option value="contract">Contract</option>
+                          <option value="work-from-home">Work From Home</option>
+                        </select>
+                      </div>
+                    <div class="col-md-12"><label class="labels">Payrate</label><input type="text" name="pay_rate" class="form-control" placeholder="enter payrate" value=""></div>
+                    <div class="col-md-12"><label class="labels">Number of Positions</label><input type="text" name="no_positions" class="form-control" placeholder="no. of posotions available" value=""></div>
+                    <div class="col-md-12"><label class="labels">Experience required</label><input type="text" name="experience_required" class="form-control" placeholder="Experience required" value=""></div>
+                </div>
+                <div class="row mt-3">
+                </div>
+                <div class="mt-5 text-center" style="padding: 20px;"><button class="btn btn-primary profile-button" type="submit">Post</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
