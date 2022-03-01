@@ -72,12 +72,15 @@ def logout():
 
 @app.route('/user_register', methods=['POST', 'GET'])
 def user_register():
-  # print(request.form)
+  #print(request.form)
   if request.method == "POST":
     email = request.form['email']
     password = request.form['password']
+    if 'user_type' not in request.form:
+      flash('Select one among Company and Applicant',category='error')
+      return redirect('/user_register')
     user_type = request.form['user_type']
-
+    #print(user_type)
     conn = get_db_connection()
     cur = conn.cursor()
     print(email)
@@ -100,8 +103,23 @@ def user_register():
 
         cur.execute("select max(pid) from login_details")
         pid = cur.fetchone()[0] + 1
-        cur.execute("INSERT INTO login_details VALUES (%(pid)s, %(email)s, %(password)s, 'applicant', %(userid)s, NULL)", {'email': str(email), 'password': str(password), 'userid': userid, 'pid': pid})
+        cur.execute("INSERT INTO login_details VALUES (%(pid)s, %(email)s, %(password)s, 'user', %(userid)s, NULL)", {'email': str(email), 'password': str(password), 'userid': userid, 'pid': pid})
         conn.commit()
+      else:
+        cur.execute("select max(company_id) from company_details")
+        cmpid = cur.fetchone()[0] + 1
+        cur.execute("INSERT INTO company_details VALUES (%(compid)s, NULL, NULL,NULL,NULL,NULL,NULL,NULL,%(o)s, NULL)", {'o': str(email), 'compid': cmpid})
+        conn.commit()
+        
+        print("=====================")
+        print(cmpid)
+        print("=====================")
+
+        cur.execute("select max(pid) from login_details")
+        pid = cur.fetchone()[0] + 1
+        cur.execute("INSERT INTO login_details VALUES (%(pid)s, %(email)s, %(password)s, 'company', NULL, %(compid)s)", {'email': str(email), 'password': str(password), 'compid': cmpid, 'pid': pid})
+        conn.commit()
+
     return redirect('/login')
   return render_template('user_register.html')
 
@@ -516,7 +534,7 @@ def createjob(cmpid):
   cmp_name = company[0]
   cmp_email = company[1]
   if request.method == "GET":
-    return render_template('postjob.html', companyid=cmpid, cmp_name=cmp_name, cmp_email=cmp_email)
+    return render_template('postJob.html', companyid=cmpid, cmp_name=cmp_name, cmp_email=cmp_email)
   if request.method == "POST":
     cur.execute("select max(job_id) from job_details")
     job_id = cur.fetchone()[0]+1
