@@ -17,10 +17,9 @@
 </head>
 
 
-<body style="margin-left: 30mm; margin-right: 30mm; margin-bottom: 30mm;">
+<body style="margin-left: 30mm; margin-right: 30mm; margin-bottom: 30mm; background-color: rgb(238, 226, 210);">
     <section id = "nav-bar">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
@@ -33,34 +32,23 @@
                   <a class="nav-link" href="/jobsApplied_{{userid}}">Jobs Applied</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="/user_profile">User Profile</a>
+                  <a class="nav-link" href="/user_profile_{{userid}}">User Profile</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">About US</a>
+                  <a class="nav-link" href="/logout"><b>Logout</b></a>
                 </li>
               </ul>
-              
-
-              <form class="d-flex" method="POST">
-                <input class="form-control me-2" placeholder="Search" aria-label="Search" name="tag" >
-                <button class="btn btn-outline-success" type="submit">Search</button>
-              </form>
             </div>
           </nav>
     </section>
     
-
-    
-    
     <div class="container" style="width:70%; margin-left: 3%; margin-right: 4%;">
       <h3 style="margin-left:40mm;">Job Details</h3>
-    
 
-    
     <div class="card mb-3" style="max-width: 1000px;">
       <div class="row g-0">
         <div class="col-md-4">
-          <img src="..." class="img-fluid rounded-start" alt="...">
+          <img src="../static/job.jpg" class="img-fluid rounded-start" alt="...">
         </div>
         <div class="col-md-8">
           <div class="card-body">

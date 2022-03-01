@@ -67,7 +67,13 @@
               <p class="card-text">Positions Available: {{job_detail.no_positions}}</p>
               <br>
               <h4>Application Status</h4>
-              <a href="#" class="btn btn-primary">{{job_detail.status}}</a>
+              {% if job_detail.status == "APPLICATION IN PROCESS"%}
+                <a href="#" class="btn btn-primary" style="background-color: rgb(24, 20, 233);">{{job_detail.status}}</a>
+              {% elif job_detail.status == "APPLICATION ACCEPTED"%}
+                <a href="#" class="btn btn-primary" style="background-color: rgb(20, 233, 91);">{{job_detail.status}}</a>
+              {% else %}
+                <a href="#" class="btn btn-primary" style="background-color: rgb(233, 20, 102);">{{job_detail.status}}</a>
+              {% endif %}
             </div>
           </div>
         </div>
