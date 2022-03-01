@@ -304,6 +304,8 @@ def check_contact(contact):
       return False
   return True
 
+
+
 @app.route('/user_profile_<int:userid>',methods=['POST', 'GET'])
 def user_profile(userid):
   if not session.get('userid'):
@@ -335,7 +337,14 @@ def user_profile(userid):
         userDetail = cur.fetchone()
         user_detail = UserDetails(userDetail[0], userDetail[1], userDetail[2], userDetail[3], userDetail[4], userDetail[5], userDetail[6], userDetail[7], userDetail[8], userDetail[9], userDetail[10])
         return render_template('user_profile.html', user_detail=user_detail, experiences=experiences)
-        
+      if(not age.isnumeric()):
+        flash("Invalid Valid Age")
+        cur.execute("select * from experiences where user_id = %(userid)s", {'userid': userid})
+        experiences = cur.fetchall()
+        cur.execute("select * from user_details where user_id = %(userid)s", {'userid': userid})
+        userDetail = cur.fetchone()
+        user_detail = UserDetails(userDetail[0], userDetail[1], userDetail[2], userDetail[3], userDetail[4], userDetail[5], userDetail[6], userDetail[7], userDetail[8], userDetail[9], userDetail[10])
+        return render_template('user_profile.html', user_detail=user_detail, experiences=experiences)
 
       cur.execute("UPDATE user_details SET firstname = %(fname)s, lastname = %(lname)s, age = %(age)s, gender = %(gender)s, ethnicity = %(eth)s, address = %(address)s, state = %(state)s, contact = %(mobile)s, Education = %(education)s WHERE user_id = %(userid)s", {'userid':userid,  'fname': str(fname), 'lname': str(lname),'age': age, 'gender': str(gender), 'eth': str(eth),'address': str(address), 'state': str(state), 'mobile': str(mobile), 'education': str(education)})
       conn.commit()

@@ -87,7 +87,6 @@ CREATE INDEX application_index ON applications
     job_id ASC
 );
 
-
 CREATE TABLE IF NOT EXISTS login_details(
     pid SERIAL PRIMARY KEY,
     login_id text unique,
@@ -96,6 +95,41 @@ CREATE TABLE IF NOT EXISTS login_details(
     user_id bigint REFERENCES user_details(user_id),
     company_id bigint REFERENCES company_details(company_id)
 );
+
+
+CREATE OR REPLACE FUNCTION user_trig ()
+RETURNS trigger AS
+$$
+    BEGIN
+        IF (TG_OP = 'DELETE') THEN
+            DELETE FROM experiences WHERE user_id = OLD.user_id;
+            DELETE FROM applications WHERE user_id = OLD.user_id;
+            DELETE FROM login_details WHERE user_id = OLD.user_id;
+        END IF;
+        RETURN OLD;
+    END;
+$$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER user_trigger BEFORE DELETE ON user_details
+FOR EACH ROW
+EXECUTE PROCEDURE user_trig();
+
+CREATE OR REPLACE FUNCTION company_trig ()
+RETURNS trigger AS
+$$
+    BEGIN
+        IF (TG_OP = 'DELETE') THEN
+            DELETE FROM job_details WHERE company_id = OLD.company_id;
+            DELETE FROM applications WHERE company_id = OLD.company_id;
+            DELETE FROM login_details WHERE company_id = OLD.company_id;
+        END IF;
+        RETURN OLD;
+    END;
+$$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER company_trigger BEFORE DELETE ON company_details
+FOR EACH ROW
+EXECUTE PROCEDURE company_trig();
 
 
 \copy company_details from 'tables/company_details.csv' DELIMITER ',' CSV HEADER;

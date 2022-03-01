@@ -1,7 +1,7 @@
 credentials = { 
-  'host' : "10.17.50.232",
+  'host' : "localhost",
   'port' : "5432",
   'database' : "group_20",
   'user' : "postgres",
-  'password' : "postgres"
+  'password' : "130902"
 }
