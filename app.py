@@ -516,7 +516,7 @@ def createjob(cmpid):
   cmp_name = company[0]
   cmp_email = company[1]
   if request.method == "GET":
-    return render_template('postjob.html', companyid=cmpid, cmp_name=cmp_name, cmp_email=cmp_email)
+    return render_template('postJob.html', companyid=cmpid, cmp_name=cmp_name, cmp_email=cmp_email)
   if request.method == "POST":
     cur.execute("select max(job_id) from job_details")
     job_id = cur.fetchone()[0]+1
